@@ -379,9 +379,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ffb66acb27cce4a8f0b302415d5dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 304786600}
+  mainCamera: {fileID: 304786600}
   moveSpeed: 15
-  jumpHeight: 30
+  jumpHeight: 25
   firstHand: {fileID: 718152426}
   secondHand: {fileID: 711674879}
   powerLimit: 15

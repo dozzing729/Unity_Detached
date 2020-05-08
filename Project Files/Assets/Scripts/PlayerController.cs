@@ -5,97 +5,87 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Attributes")]
-    public Camera camera;
-    public float moveSpeed;
-    public float jumpHeight;
-    private bool isGrounded;
-    private bool jumped;
-    private bool blocked;
+    public Camera       mainCamera;
     private Rigidbody2D rigidBody;
-    private bool movable;
-    private bool controlling;
-    private bool controlEnabled;
+    public float        moveSpeed;
+    public float        jumpHeight;
+    private bool        isGrounded;
+    private bool        isJumping;
+    private bool        isMovable;
+    private bool        isControlling;
 
     [Header("Shoot Attributes")]
-    public HandController firstHand;
-    public HandController secondHand;
-    public float powerLimit;
-    public float powerIncrement;
-    private float power;
-    private short arms;
-    private bool leftRetreiving;
-    private bool rightRetreiving;
+    public HandController   firstHand;
+    public HandController   secondHand;
+    public float            powerLimit;
+    public float            powerIncrement;
+    private float           power;
+    private short           arms;
+    private bool            isLeftRetreiving;
+    private bool            isRightRetreiving;
 
     [Header("Ground Check Attributes")]
-    public GameObject groundCheck;
-    public float groundCheckRadius;
+    public GameObject   groundCheck;
+    public float        groundCheckRadius;
 
-    private Animator animator;
-    private short dir;
-    private short lastDir;
+    [Header("Animation Attributes")]
+    private Animator    animator;
+    private short       dir;
+    private short       lastDir;
     private enum State { idle, walk, jump_ready, jump_air, charge, fire };
-    private State state;
-    private bool stateFixed;
+    private State       state;
+    private bool        isStateFixed;
 
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        movable = true;
-        jumped = false;
-        blocked = false;
-        controlling = true;
+        // Movement attributes
+        rigidBody       = GetComponent<Rigidbody2D>();
+        isMovable       = true;
+        isJumping       = false;
+        isControlling   = true;
 
-        power = 0.0f;
-        arms = 2;
-        leftRetreiving = false;
-        rightRetreiving = false;
+        // Shoot attributes
+        power               = 0.0f;
+        arms                = 2;
+        isLeftRetreiving    = false;
+        isRightRetreiving   = false;
 
-        dir = 0;
-        lastDir = 1;
-        state = State.idle;
-        stateFixed = false;
+        // Animation attributes
+        animator        = GetComponent<Animator>();
+        dir             = 0;
+        lastDir         = 1;
+        state           = State.idle;
+        isStateFixed    = false;
     }
     
     void Update()
     {
         GroundCheck();
-
-        if (controlling)
+        if (isControlling)
         {
             Jump();
             Move();
             Shoot();
+            Retreive();
         }
-
-        changeControl();
+        ChangeControl();
         AnimationControl();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
-        {
-            blocked = true;
-        }
-        else
-        {
-            blocked = false;
-        }
     }
 
     void GroundCheck()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Ground"));
+        isGrounded      = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Ground"));
+
         if (!isGrounded)
-            isGrounded = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Left Hand"));
+            isGrounded  = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Left Hand"));
+
         if (!isGrounded)
-            isGrounded = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Right Hand"));
+            isGrounded  = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Right Hand"));
 
         if (!isGrounded)
         {
-            state = State.jump_air;
-            jumped = false;
+            state       = State.jump_air;
+            isJumping   = false;
         }
     }
 
@@ -104,26 +94,26 @@ public class PlayerController : MonoBehaviour
         Vector3 cameraPosition = gameObject.transform.position;
         cameraPosition.z -= 1;
         cameraPosition.y += 5;
-        camera.transform.position = cameraPosition;
+        mainCamera.transform.position = cameraPosition;
 
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
 
         if (movement.x < 0)
         {
-            dir = -1;
+            dir     = -1;
             lastDir = -1;
             if (isGrounded)
             {
-                if (!stateFixed) state = State.walk;
+                if (!isStateFixed) state = State.walk;
             }
         }
         if (movement.x > 0)
         {
-            dir = 1;
+            dir     = 1;
             lastDir = 1;
             if (isGrounded)
             {
-                if (!stateFixed) state = State.walk;
+                if (!isStateFixed) state = State.walk;
             }
         }
         if (movement.x == 0)
@@ -131,11 +121,11 @@ public class PlayerController : MonoBehaviour
             dir = 0;
             if (isGrounded)
             {
-                if (!stateFixed) state = State.idle;
+                if (!isStateFixed) state = State.idle;
             }
         }
 
-        if (movable)
+        if (isMovable)
         {
             rigidBody.transform.Translate(movement);
         }
@@ -144,18 +134,18 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (isGrounded && movable)
+        if (isGrounded && isMovable)
         {
-            if (Input.GetButtonDown("Jump") && !jumped)
+            if (Input.GetButtonDown("Jump") && !isJumping)
             {
                 // Jump start.
                 state = State.jump_ready;
                 // Wait until the jump_animation is finished.
                 Invoke("MakeJump", 0.3f);
                 // Player's state is fixed while jump_ready animation is playing.
-                stateFixed = true;
+                isStateFixed = true;
                 // Player has jumped.
-                jumped = true;
+                isJumping = true;
             }
         }
     }
@@ -163,118 +153,115 @@ public class PlayerController : MonoBehaviour
     void MakeJump()
     {
         rigidBody.AddForce(new Vector2(0f, jumpHeight), ForceMode2D.Impulse);
-        stateFixed = false;
+        isStateFixed = false;
     }
 
     void Shoot()
     {
-        if (isGrounded && !stateFixed)
+        if (isGrounded && !isStateFixed)
         {
             // Charge
             if (Input.GetKey(KeyCode.L) && arms != 0)
             {
-                if (!leftRetreiving || !rightRetreiving)
-                {
-                    // Charging start.
-                    state = State.charge;
-                    // Player can't move while charging.
-                    movable = false;
-                    // Increase power until limit;
-                    if (power < powerLimit) power += powerIncrement;
-                }
+                // Charging start.
+                state = State.charge;
+                // Player can't move while charging.
+                isMovable = false;
+                // Increase power until limit;
+                if (power < powerLimit) power += powerIncrement;
             }
 
             // Fire
             if (Input.GetKeyUp(KeyCode.L) && arms != 0)
             {
-                if (!leftRetreiving || !rightRetreiving)
-                {
-                    // Firing start.
-                    state = State.fire;
-                    // Wait for the fire animation to finish.
-                    Invoke("MakeShoot", 0.3f);
-                    // Player's state is fixed while the animation is playing
-                    stateFixed = true;
-                    // Call HandController class's function to actually fire
-                    if (arms == 2) firstHand.Fire(power);
-                    if (arms == 1) secondHand.Fire(power);
-                    power = 0.0f;
-                }
+                // Firing start.
+                state = State.fire;
+                // Wait for the fire animation to finish.
+                Invoke("MakeShoot", 0.3f);
+                // Player's state is fixed while the animation is playing
+                isStateFixed = true;
+                // Call HandController class's function to actually fire
+                if (arms == 2) firstHand.Fire(power);
+                if (arms == 1) secondHand.Fire(power);
+                power = 0.0f;
             }
         }
-
-        // Retreive
-        if (Input.GetKeyDown(KeyCode.R) && movable)
-        {
-            if (arms == 1)
-            {
-                leftRetreiving = true;
-                firstHand.StartRetrieve();
-            }
-            else if (arms == 0)
-            {
-                leftRetreiving = true;
-                rightRetreiving = true;
-                firstHand.StartRetrieve();
-                secondHand.StartRetrieve();
-            }
-        }
-
-        // Check if retreiving is all done
-        if (leftRetreiving)
-        {
-            leftRetreiving = !firstHand.getRetreiveComplete();
-            if (!leftRetreiving) arms++;
-        }
-        if (rightRetreiving)
-        {
-            rightRetreiving = !secondHand.getRetreiveComplete();
-            if (!rightRetreiving) arms++;
-        }
-        
     }
 
     void MakeShoot()
     {
         // Once firing is done, player is able to move, change state and an arm is reduced.
-        movable = true;
-        stateFixed = false;
-        state = State.idle;
+        isMovable       = true;
+        isStateFixed    = false;
+        state           = State.idle;
         arms--;
     }
 
-    void changeControl()
+    void Retreive()
+    {
+        // Retreive
+        if (Input.GetKeyDown(KeyCode.R) && isMovable)
+        {
+            if (arms == 1)
+            {
+                isLeftRetreiving = true;
+                firstHand.StartRetrieve();
+            }
+            else if (arms == 0)
+            {
+                isLeftRetreiving    = true;
+                isRightRetreiving   = true;
+                firstHand   .StartRetrieve();
+                secondHand  .StartRetrieve();
+            }
+        }
+
+        // Check if retreiving is all done
+        if (isLeftRetreiving)
+        {
+            isLeftRetreiving = !firstHand.getRetreiveComplete();
+            if (!isLeftRetreiving) arms++;
+        }
+        if (isRightRetreiving)
+        {
+            isRightRetreiving = !secondHand.getRetreiveComplete();
+            if (!isRightRetreiving) arms++;
+        }
+
+    }
+
+    void ChangeControl()
     {
         if (Input.GetKeyDown(KeyCode.Tab) && arms != 2)
         {
             if (arms == 1)
             {
-                if (controlling)
+                if (isControlling)
                 {
-                    controlling = false;
+                    isControlling = false;
                     firstHand.setControlling(true);
                 }
                 else if (firstHand.getControlling())
                 {
-                    controlling = true;
+                    isControlling = true;
                     firstHand.setControlling(false);
                 }
             }
             else if (arms == 0)
             {
-                if (controlling)
+                if (isControlling)
                 {
-                    controlling = false;
+                    isControlling = false;
                     firstHand.setControlling(true);
                 }
                 else if (firstHand.getControlling())
                 {
-                    firstHand.setControlling(false);
-                    secondHand.setControlling(true);
+                    firstHand   .setControlling(false);
+                    secondHand  .setControlling(true);
                 }
                 else
                 {
-                    controlling = true;
+                    isControlling = true;
                     secondHand.setControlling(false);
                 }
 
@@ -314,7 +301,7 @@ public class PlayerController : MonoBehaviour
                     if (arms == 1) animator.Play("Walk_Left_2");
                     if (arms == 0) animator.Play("Walk_Left_3");
                 }
-                if (!controlling) state = State.idle;
+                if (!isControlling) state = State.idle;
                 break;
             case State.jump_ready:
                 if (lastDir == 1)
@@ -343,7 +330,7 @@ public class PlayerController : MonoBehaviour
                     if (arms == 1) animator.Play("Jump_Left_Air_2");
                     if (arms == 0) animator.Play("Jump_Left_Air_3");
                 }
-                if (!controlling && groundCheck) state = State.idle;
+                if (!isControlling && groundCheck) state = State.idle;
                 break;
             case State.charge:
                 if (lastDir == 1)
@@ -375,22 +362,14 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius);
-    }
+    { Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius); }
 
     public short getDir()
-    {
-        return lastDir;
-    }
+    { return lastDir; }
 
     public bool getControlling()
-    {
-        return controlling;
-    }
+    { return isControlling; }
 
     public void setControlling(bool input)
-    {
-        controlling = input;
-    }
+    { isControlling = input; }
 }

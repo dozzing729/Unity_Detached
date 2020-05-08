@@ -14,10 +14,10 @@ public class SwitchController : MonoBehaviour
 
     void Start()
     {
-        leftHandAround = rightHandAround = false;
-        activated = false;
-        plugged_green.SetActive(false);
-        plugged_red.SetActive(false);
+        leftHandAround  = rightHandAround = false;
+        activated       = false;
+        plugged_green   .SetActive(false);
+        plugged_red     .SetActive(false);
     }
 
     void Update()
@@ -29,7 +29,7 @@ public class SwitchController : MonoBehaviour
 
     private void HandCheck()
     {
-        leftHandAround = Physics2D.OverlapCircle(handCheck.transform.position, handCheckRadius, LayerMask.GetMask("Left Hand"));
+        leftHandAround  = Physics2D.OverlapCircle(handCheck.transform.position, handCheckRadius, LayerMask.GetMask("Left Hand"));
         rightHandAround = Physics2D.OverlapCircle(handCheck.transform.position, handCheckRadius, LayerMask.GetMask("Right Hand"));
     }
 
@@ -42,8 +42,8 @@ public class SwitchController : MonoBehaviour
                 // Activating switch
                 if (!activated)
                 {
-                    if ((leftPlugged && leftHand.getControlling()) ||
-                        (rightPlugged && rightHand.getControlling()))
+                    if ((leftPlugged    &&  leftHand.getControlling()) ||
+                        (rightPlugged   &&  rightHand.getControlling()))
                     {
                         activated = true;
                         Invoke("Deactivate", 0.5f);
