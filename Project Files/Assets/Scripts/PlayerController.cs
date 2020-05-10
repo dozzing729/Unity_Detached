@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
     public float            powerIncrement;
     private float           power;
     private short           arms;
-    private bool            isLeftRetreiving;
-    private bool            isRightRetreiving;
+    private bool            isLeftRetrieving;
+    private bool            isRightRetrieving;
 
     [Header("Ground Check Attributes")]
     public GameObject   groundCheck;
@@ -32,11 +32,11 @@ public class PlayerController : MonoBehaviour
     private Animator    animator;
     private short       dir;
     private short       lastDir;
-    private enum State { idle, walk, jump_ready, jump_air, charge, fire };
+    private enum        State { idle, walk, jump_ready, jump_air, charge, fire };
     private State       state;
     private bool        isStateFixed;
 
-    void Start()
+    private void Start()
     {
         // Movement attributes
         rigidBody       = GetComponent<Rigidbody2D>();
@@ -47,8 +47,8 @@ public class PlayerController : MonoBehaviour
         // Shoot attributes
         power               = 0.0f;
         arms                = 2;
-        isLeftRetreiving    = false;
-        isRightRetreiving   = false;
+        isLeftRetrieving    = false;
+        isRightRetrieving   = false;
 
         // Animation attributes
         animator        = GetComponent<Animator>();
@@ -57,8 +57,8 @@ public class PlayerController : MonoBehaviour
         state           = State.idle;
         isStateFixed    = false;
     }
-    
-    void Update()
+
+    private void Update()
     {
         GroundCheck();
         if (isControlling)
@@ -66,13 +66,13 @@ public class PlayerController : MonoBehaviour
             Jump();
             Move();
             Shoot();
-            Retreive();
+            Retrieve();
         }
         ChangeControl();
         AnimationControl();
     }
 
-    void GroundCheck()
+    private void GroundCheck()
     {
         isGrounded      = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Ground"));
 
@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Move()
+    private void Move()
     {
         Vector3 cameraPosition = gameObject.transform.position;
         cameraPosition.z -= 1;
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void Jump()
+    private void Jump()
     {
         if (isGrounded && isMovable)
         {
@@ -150,13 +150,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void MakeJump()
+    private void MakeJump()
     {
         rigidBody.AddForce(new Vector2(0f, jumpHeight), ForceMode2D.Impulse);
         isStateFixed = false;
     }
 
-    void Shoot()
+    private void Shoot()
     {
         if (isGrounded && !isStateFixed)
         {
@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void MakeShoot()
+    private void MakeShoot()
     {
         // Once firing is done, player is able to move, change state and an arm is reduced.
         isMovable       = true;
@@ -197,54 +197,54 @@ public class PlayerController : MonoBehaviour
         arms--;
     }
 
-    void Retreive()
+    private void Retrieve()
     {
-        // Retreive
+        // Retrieve
         if (Input.GetKeyDown(KeyCode.R) && isMovable)
         {
             if (arms == 1)
             {
-                isLeftRetreiving = true;
+                isLeftRetrieving = true;
                 firstHand.StartRetrieve();
             }
             else if (arms == 0)
             {
-                isLeftRetreiving    = true;
-                isRightRetreiving   = true;
+                isLeftRetrieving    = true;
+                isRightRetrieving   = true;
                 firstHand   .StartRetrieve();
                 secondHand  .StartRetrieve();
             }
         }
 
         // Check if retreiving is all done
-        if (isLeftRetreiving)
+        if (isLeftRetrieving)
         {
-            isLeftRetreiving = !firstHand.getRetreiveComplete();
-            if (!isLeftRetreiving) arms++;
+            isLeftRetrieving = !firstHand.GetRetreiveComplete();
+            if (!isLeftRetrieving) arms++;
         }
-        if (isRightRetreiving)
+        if (isRightRetrieving)
         {
-            isRightRetreiving = !secondHand.getRetreiveComplete();
-            if (!isRightRetreiving) arms++;
+            isRightRetrieving = !secondHand.GetRetreiveComplete();
+            if (!isRightRetrieving) arms++;
         }
 
     }
 
-    void ChangeControl()
+    private void ChangeControl()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && arms != 2)
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (arms == 1)
             {
                 if (isControlling)
                 {
                     isControlling = false;
-                    firstHand.setControlling(true);
+                    firstHand.SetControlling(true);
                 }
-                else if (firstHand.getControlling())
+                else if (firstHand.GetControlling())
                 {
                     isControlling = true;
-                    firstHand.setControlling(false);
+                    firstHand.SetControlling(false);
                 }
             }
             else if (arms == 0)
@@ -252,24 +252,24 @@ public class PlayerController : MonoBehaviour
                 if (isControlling)
                 {
                     isControlling = false;
-                    firstHand.setControlling(true);
+                    firstHand.SetControlling(true);
                 }
-                else if (firstHand.getControlling())
+                else if (firstHand.GetControlling())
                 {
-                    firstHand   .setControlling(false);
-                    secondHand  .setControlling(true);
+                    firstHand   .SetControlling(false);
+                    secondHand  .SetControlling(true);
                 }
                 else
                 {
                     isControlling = true;
-                    secondHand.setControlling(false);
+                    secondHand.SetControlling(false);
                 }
 
             }
         }
     }
 
-    void AnimationControl()
+    private void AnimationControl()
     {
         switch (state)
         {
@@ -364,12 +364,12 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     { Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius); }
 
-    public short getDir()
+    public short GetDir()
     { return lastDir; }
 
-    public bool getControlling()
+    public bool GetControlling()
     { return isControlling; }
 
-    public void setControlling(bool input)
+    public void GetControlling(bool input)
     { isControlling = input; }
 }

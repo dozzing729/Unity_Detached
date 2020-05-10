@@ -1541,7 +1541,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 193579140}
-  camera: {fileID: 304786600}
+  mainCamera: {fileID: 304786600}
   retrieveSpeed: 60
   moveSpeed: 10
   player: {fileID: 193579135}
@@ -1709,7 +1709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 193579140}
-  camera: {fileID: 304786600}
+  mainCamera: {fileID: 304786600}
   retrieveSpeed: 60
   moveSpeed: 10
   player: {fileID: 193579135}

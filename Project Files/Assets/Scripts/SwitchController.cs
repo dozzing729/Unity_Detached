@@ -42,8 +42,8 @@ public class SwitchController : MonoBehaviour
                 // Activating switch
                 if (!activated)
                 {
-                    if ((leftPlugged    &&  leftHand.getControlling()) ||
-                        (rightPlugged   &&  rightHand.getControlling()))
+                    if ((leftPlugged    &&  leftHand.GetControlling()) ||
+                        (rightPlugged   &&  rightHand.GetControlling()))
                     {
                         activated = true;
                         Invoke("Deactivate", 0.5f);
@@ -57,14 +57,14 @@ public class SwitchController : MonoBehaviour
                 {
                     leftPlugged = true;
                     leftHand.GetComponent<SpriteRenderer>().enabled = false;
-                    leftHand.setMovable(false);
+                    leftHand.SetMovable(false);
                     return;
                 }
                 if (rightHandAround && !rightPlugged)
                 {
                     rightPlugged = true;
                     rightHand.GetComponent<SpriteRenderer>().enabled = false;
-                    rightHand.setMovable(false);
+                    rightHand.SetMovable(false);
                     return;
                 }
             }
