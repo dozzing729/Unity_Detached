@@ -4,23 +4,24 @@ using UnityEngine;
 
 public class JumpPadController : MonoBehaviour
 {
-    public Rigidbody2D playerRigidbody;
-    public GameObject playerCheck;
-    public GameObject jumpPad;
+    public Rigidbody2D      playerRigidbody;
+    public GameObject       playerCheck;
+    public GameObject       jumpPad;
     public SwitchController switchController;
-    private Vector2 jumpPadPositionBefore;
-    private Vector2 jumpPadPositionAfter;
-    public float playerCheckRadius;
-    public float jumpPower;
-    private bool playerOnPad;
-    private bool activated;
+    private Vector2         jumpPadPositionBefore;
+    private Vector2         jumpPadPositionAfter;
+    public float            playerCheckRadius;
+    public float            jumpPower;
+    public float            playerCheckRectX, playerCheckRectY;
+    private bool            playerOnPad;
+    private bool            activated;
 
     private void Start()
     {
-        jumpPadPositionBefore = jumpPad.transform.position;
-        jumpPadPositionAfter = jumpPadPositionBefore;
-        jumpPadPositionAfter.y += 1;
-        activated = false;
+        jumpPadPositionBefore   = jumpPad.transform.position;
+        jumpPadPositionAfter    = jumpPadPositionBefore;
+        jumpPadPositionAfter.y  += 1;
+        activated               = false;
     }
 
     private void Update()
@@ -31,7 +32,7 @@ public class JumpPadController : MonoBehaviour
 
     private void PlayerCheck()
     {
-        playerOnPad = Physics2D.OverlapCircle(playerCheck.transform.position, playerCheckRadius, LayerMask.GetMask("Player"));
+        playerOnPad = Physics2D.OverlapBox(playerCheck.transform.position, new Vector2(playerCheckRectX, playerCheckRectY), 0.0f, LayerMask.GetMask("Player"));
     }
 
     private void ActivateJumpPad()
@@ -50,8 +51,5 @@ public class JumpPadController : MonoBehaviour
         jumpPad.gameObject.transform.position = jumpPadPositionBefore;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(playerCheck.transform.position, playerCheckRadius);
-    }
+    private void OnDrawGizmos() { Gizmos.DrawWireCube(playerCheck.transform.position, new Vector3(playerCheckRectX, playerCheckRectY, 0)); }
 }

@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class SwitchController : MonoBehaviour
 {
-    public GameObject unplugged_switch, plugged_green, plugged_red;
-    public GameObject handCheck;
-    public HandController leftHand, rightHand;
-    public float handCheckRadius;
-    private bool leftPlugged, rightPlugged;
-    private bool leftHandAround, rightHandAround;
-    private bool activated;
+    public GameObject       unplugged_switch, plugged_green, plugged_red;
+    public GameObject       handCheck;
+    public HandController   leftHand, rightHand;
+    public float            handCheckRectX, handCheckRectY;
+    private bool            leftPlugged, rightPlugged;
+    private bool            leftHandAround, rightHandAround;
+    private bool            activated;
 
     void Start()
     {
-        leftHandAround  = rightHandAround = false;
+        leftHandAround  = false;
+        rightHandAround = false;
         activated       = false;
         plugged_green   .SetActive(false);
         plugged_red     .SetActive(false);
@@ -29,19 +30,21 @@ public class SwitchController : MonoBehaviour
 
     private void HandCheck()
     {
-        leftHandAround  = Physics2D.OverlapCircle(handCheck.transform.position, handCheckRadius, LayerMask.GetMask("Left Hand"));
-        rightHandAround = Physics2D.OverlapCircle(handCheck.transform.position, handCheckRadius, LayerMask.GetMask("Right Hand"));
+        leftHandAround  = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Left Hand"));
+        rightHandAround = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Right Hand"));
     }
 
     private void ActivateSwitch()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            // If this switch is plugged in by eiher right or left
             if (leftPlugged || rightPlugged)
             {
                 // Activating switch
                 if (!activated)
                 {
+                    // Activate only when the plugged hand is being controlled
                     if ((leftPlugged    &&  leftHand.GetControlling()) ||
                         (rightPlugged   &&  rightHand.GetControlling()))
                     {
@@ -53,18 +56,16 @@ public class SwitchController : MonoBehaviour
             else
             {
                 // Plugging into switch
-                if (leftHandAround && !leftPlugged)
+                if (leftHandAround && !leftPlugged && leftHand.GetControlling())
                 {
                     leftPlugged = true;
-                    leftHand.GetComponent<SpriteRenderer>().enabled = false;
-                    leftHand.SetMovable(false);
+                    leftHand.SetStateAfterPlugIn();
                     return;
                 }
-                if (rightHandAround && !rightPlugged)
+                if (rightHandAround && !rightPlugged && rightHand.GetControlling())
                 {
                     rightPlugged = true;
-                    rightHand.GetComponent<SpriteRenderer>().enabled = false;
-                    rightHand.SetMovable(false);
+                    rightHand.SetStateAfterPlugIn();
                     return;
                 }
             }
@@ -111,5 +112,5 @@ public class SwitchController : MonoBehaviour
         this.rightPlugged = plugged;
     }
 
-    private void OnDrawGizmos() { Gizmos.DrawWireSphere(handCheck.transform.position, handCheckRadius); }
+    private void OnDrawGizmos() { Gizmos.DrawWireCube(handCheck.transform.position, new Vector3(handCheckRectX, handCheckRectY, 0)); }
 }

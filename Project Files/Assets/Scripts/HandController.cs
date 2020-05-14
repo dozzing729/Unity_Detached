@@ -102,12 +102,12 @@ public class HandController : MonoBehaviour
     public void StartRetrieve()
     {
         // Trigger 'Retrieve()'. Properties are changed so that the hand can move freely.
-        sprite          .enabled = true;
-        boxCollider     .isTrigger = true;
-        rigidBody       .gravityScale = 0f;
-        rigidBody       .mass = 0f;
-        movable         = true;
-        isRetrieving    = true;
+        sprite.enabled          = true;
+        boxCollider.isTrigger   = true;
+        rigidBody.gravityScale  = 0f;
+        rigidBody.mass          = 0f;
+        movable                 = true;
+        isRetrieving            = true;
 
         // Unplug from switch
         switch_1    .setPlugged(false);
@@ -185,6 +185,24 @@ public class HandController : MonoBehaviour
                     anim.Play("idle_left");
                 break;
         }
+    }
+
+    public void SetStateAfterPlugIn()
+    {
+        sprite.enabled          = false;
+        boxCollider.isTrigger   = true;
+        rigidBody.gravityScale  = 0f;
+        rigidBody.mass          = 0f;
+        movable                 = false;
+    }
+
+    public void SetStateAfterPlugOut()
+    {
+        sprite.enabled          = true;
+        boxCollider.isTrigger   = false;
+        rigidBody.gravityScale  = gravityScale;
+        rigidBody.mass          = mass;
+        movable                 = true;
     }
 
     public bool GetControlling() { return controlling; }
