@@ -13,8 +13,8 @@ public class HandController : MonoBehaviour
     public float            moveSpeed;
     private short           dir;
     private short           lastDir;
-    private bool            controlling;
-    private bool            movable;
+    private bool            isControlling;
+    private bool            isMovable;
 
     [Header("Retrieve Attributes")]
     public GameObject       player;
@@ -26,7 +26,7 @@ public class HandController : MonoBehaviour
     private float           gravityScale;
     private float           mass;
     private bool            isRetrieving;
-    private bool            retrieveComplete;
+    private bool            isRetrieveComplete;
 
     [Header("Swiches")]
     public SwitchController switch_1;
@@ -41,8 +41,8 @@ public class HandController : MonoBehaviour
         anim                = GetComponent<Animator>();
         dir                 = 1;
         lastDir             = 1;
-        controlling         = false;
-        movable             = true;
+        isControlling       = false;
+        isMovable           = true;
 
         // Retreive Attributes
         sprite              = GetComponent<SpriteRenderer>();
@@ -51,13 +51,13 @@ public class HandController : MonoBehaviour
         playerPosition      = player.transform.position;
         gravityScale        = rigidBody.gravityScale;
         mass                = rigidBody.mass;
-        isRetrieving          = false;        
-        retrieveComplete    = true;
+        isRetrieving        = false;        
+        isRetrieveComplete  = true;
     }
 
     private void Update()
     {
-        if (!controlling)
+        if (!isControlling)
         {
             Retrieve();
         }
@@ -74,13 +74,13 @@ public class HandController : MonoBehaviour
         // Set every property to default
         rigidBody.gravityScale  = gravityScale;
         rigidBody.mass          = mass;
-        retrieveComplete        = false;
+        isRetrieveComplete      = false;
         Vector2 fireVector      = Vector2.zero;
         playerPosition          = player.transform.position;
         gameObject              .SetActive(true);
 
         // Fire vector is calculated.
-        // Initial position is set in a little front of the player.
+        // Initial position is set to a little front of the player.
         switch (playerController.GetDir())
         {
             case 1:
@@ -106,7 +106,7 @@ public class HandController : MonoBehaviour
         boxCollider.isTrigger   = true;
         rigidBody.gravityScale  = 0f;
         rigidBody.mass          = 0f;
-        movable                 = true;
+        isMovable               = true;
         isRetrieving            = true;
 
         // Unplug from switch
@@ -136,7 +136,7 @@ public class HandController : MonoBehaviour
                 boxCollider         .isTrigger = false;
                 gameObject          .SetActive(false);
                 isRetrieving        = false;
-                retrieveComplete    = true;
+                isRetrieveComplete  = true;
             }
         }
     }
@@ -166,7 +166,7 @@ public class HandController : MonoBehaviour
             dir     = 0;
         }
 
-        if (movable) rigidBody.transform.Translate(movement);
+        if (isMovable) rigidBody.transform.Translate(movement);
     }
 
     private void AnimationControl()
@@ -193,7 +193,7 @@ public class HandController : MonoBehaviour
         boxCollider.isTrigger   = true;
         rigidBody.gravityScale  = 0f;
         rigidBody.mass          = 0f;
-        movable                 = false;
+        isMovable               = false;
     }
 
     public void SetStateAfterPlugOut()
@@ -202,14 +202,14 @@ public class HandController : MonoBehaviour
         boxCollider.isTrigger   = false;
         rigidBody.gravityScale  = gravityScale;
         rigidBody.mass          = mass;
-        movable                 = true;
+        isMovable               = true;
     }
 
-    public bool GetControlling() { return controlling; }
+    public bool GetControlling() { return isControlling; }
 
-    public void SetControlling(bool controlling) { this.controlling = controlling; }
+    public void SetControlling(bool isControlling) { this.isControlling = isControlling; }
 
-    public void SetMovable(bool movable) { this.movable = movable; }
+    public void SetMovable(bool isMovable) { this.isMovable = isMovable; }
 
-    public bool GetRetreiveComplete() { return retrieveComplete; }
+    public bool GetRetreiveComplete() { return isRetrieveComplete; }
 }
