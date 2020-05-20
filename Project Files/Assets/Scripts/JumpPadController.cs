@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class JumpPadController : MonoBehaviour
 {
-    public Rigidbody2D      playerRigidbody;
-    public Rigidbody2D      leftHandRigidbody;
-    public Rigidbody2D      rightHandRigidbody;
-    public GameObject       playerCheck;
-    public GameObject       leftHand;
-    public GameObject       rightHand;
-    public GameObject       jumpPad;
-    public SwitchController switchController;
-    private Vector2         jumpPadPositionBefore;
-    private Vector2         jumpPadPositionAfter;
-    public float            playerCheckRadius;
-    public float            jumpPower;
-    public float            checkRectX, checkRectY;
-    private bool            isPlayerOnPad;
-    private bool            isLeftHandOnPad;
-    private bool            isRightHandOnPad;
-    private bool            activated;
+    public Rigidbody2D              playerRigidbody;
+    public Rigidbody2D              leftHandRigidbody;
+    public Rigidbody2D              rightHandRigidbody;
+    public GameObject               playerCheck;
+    public GameObject               leftHand;
+    public GameObject               rightHand;
+    public GameObject               jumpPad;
+    public JumpPadSwitchController  switchController;
+    private Vector2                 jumpPadPositionBefore;
+    private Vector2                 jumpPadPositionAfter;
+    public float                    playerCheckRadius;
+    public float                    jumpPower;
+    public float                    checkRectX, checkRectY;
+    private bool                    isPlayerOnPad;
+    private bool                    isLeftHandOnPad;
+    private bool                    isRightHandOnPad;
+    private bool                    activated;
 
     private void Start()
     {

@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 cameraPosition = gameObject.transform.position;
         cameraPosition.z -= 1;
-        cameraPosition.y += 5;
+        cameraPosition.y = -68;
         mainCamera.transform.position = cameraPosition;
 
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
@@ -219,12 +219,12 @@ public class PlayerController : MonoBehaviour
         // Check if retreiving is all done
         if (isLeftRetrieving)
         {
-            isLeftRetrieving = !firstHand.GetRetreiveComplete();
+            isLeftRetrieving = !firstHand.getRetrieveComplete();
             if (!isLeftRetrieving) arms++;
         }
         if (isRightRetrieving)
         {
-            isRightRetrieving = !secondHand.GetRetreiveComplete();
+            isRightRetrieving = !secondHand.getRetrieveComplete();
             if (!isRightRetrieving) arms++;
         }
 
@@ -239,12 +239,12 @@ public class PlayerController : MonoBehaviour
                 if (isControlling)
                 {
                     isControlling = false;
-                    firstHand.SetControlling(true);
+                    firstHand.setControlling(true);
                 }
-                else if (firstHand.GetControlling())
+                else if (firstHand.getControlling())
                 {
                     isControlling = true;
-                    firstHand.SetControlling(false);
+                    firstHand.setControlling(false);
                 }
             }
             else if (arms == 0)
@@ -252,17 +252,17 @@ public class PlayerController : MonoBehaviour
                 if (isControlling)
                 {
                     isControlling = false;
-                    firstHand.SetControlling(true);
+                    firstHand.setControlling(true);
                 }
-                else if (firstHand.GetControlling())
+                else if (firstHand.getControlling())
                 {
-                    firstHand   .SetControlling(false);
-                    secondHand  .SetControlling(true);
+                    firstHand   .setControlling(false);
+                    secondHand  .setControlling(true);
                 }
                 else
                 {
                     isControlling = true;
-                    secondHand.SetControlling(false);
+                    secondHand.setControlling(false);
                 }
 
             }
@@ -364,12 +364,12 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     { Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius); }
 
-    public short GetDir()
+    public short getDir()
     { return lastDir; }
 
-    public bool GetControlling()
+    public bool getControlling()
     { return isControlling; }
 
-    public void GetControlling(bool input)
+    public void setControlling(bool input)
     { isControlling = input; }
 }

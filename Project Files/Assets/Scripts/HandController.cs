@@ -28,10 +28,6 @@ public class HandController : MonoBehaviour
     private bool            isRetrieving;
     private bool            isRetrieveComplete;
 
-    [Header("Swiches")]
-    public SwitchController switch_1;
-    
-
     private void Start()
     {
         // Inactive in default
@@ -81,7 +77,7 @@ public class HandController : MonoBehaviour
 
         // Fire vector is calculated.
         // Initial position is set to a little front of the player.
-        switch (playerController.GetDir())
+        switch (playerController.getDir())
         {
             case 1:
                 playerPosition.x                += 2;
@@ -108,9 +104,6 @@ public class HandController : MonoBehaviour
         rigidBody.mass          = 0f;
         isMovable               = true;
         isRetrieving            = true;
-
-        // Unplug from switch
-        switch_1    .setPlugged(false);
     }
 
     private void Retrieve()
@@ -146,7 +139,7 @@ public class HandController : MonoBehaviour
     {
         Vector3 cameraPosition          = gameObject.transform.position;
         cameraPosition.z                -= 10;
-        cameraPosition.y                += 5;
+        cameraPosition.y                = -68;
         mainCamera.transform.position   = cameraPosition;
 
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
@@ -205,11 +198,11 @@ public class HandController : MonoBehaviour
         isMovable               = true;
     }
 
-    public bool GetControlling() { return isControlling; }
+    public bool getControlling() { return isControlling; }
 
-    public void SetControlling(bool isControlling) { this.isControlling = isControlling; }
+    public void setControlling(bool isControlling) { this.isControlling = isControlling; }
 
-    public void SetMovable(bool isMovable) { this.isMovable = isMovable; }
+    public void setMovable(bool isMovable) { this.isMovable = isMovable; }
 
-    public bool GetRetreiveComplete() { return isRetrieveComplete; }
+    public bool getRetrieveComplete() { return isRetrieveComplete; }
 }
