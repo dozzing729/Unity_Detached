@@ -138,8 +138,8 @@ public class HandController : MonoBehaviour
     private void Move()
     {
         Vector3 cameraPosition          = gameObject.transform.position;
-        cameraPosition.z                -= 10;
-        cameraPosition.y                = -68;
+        cameraPosition.z                = -100;
+        cameraPosition.y                += 7;
         mainCamera.transform.position   = cameraPosition;
 
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
@@ -187,6 +187,7 @@ public class HandController : MonoBehaviour
         rigidBody.gravityScale  = 0f;
         rigidBody.mass          = 0f;
         isMovable               = false;
+        rigidBody.velocity      = Vector2.zero;
     }
 
     public void SetStateAfterPlugOut()
