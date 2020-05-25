@@ -137,10 +137,16 @@ public class HandController : MonoBehaviour
 
     private void Move()
     {
-        Vector3 cameraPosition          = gameObject.transform.position;
-        cameraPosition.z                = -100;
-        cameraPosition.y                += 7;
-        mainCamera.transform.position   = cameraPosition;
+       // Camera position setting
+        Vector3 cameraPosition = transform.position;
+        cameraPosition.z = -100;
+        cameraPosition.y += 7;
+        mainCamera.transform.position = cameraPosition;
+        
+        // Camera size setting
+        mainCamera.orthographicSize = 85 + 70 * cameraPosition.y / 73;
+        if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
+        if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
 
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
 

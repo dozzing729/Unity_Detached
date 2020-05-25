@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         // Camera position setting
-        Vector3 cameraPosition = gameObject.transform.position;
+        Vector3 cameraPosition = transform.position;
         cameraPosition.z = -100;
         cameraPosition.y += 7;
         mainCamera.transform.position = cameraPosition;
@@ -133,7 +133,9 @@ public class PlayerController : MonoBehaviour
 
         if (isMovable)
         {
-            rigidBody.transform.Translate(movement);
+            Vector2 currentPosition = gameObject.transform.position;
+            //rigidBody.MovePosition(currentPosition + movement);
+            transform.Translate(movement);
         }
 
     }

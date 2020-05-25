@@ -53,11 +53,11 @@ public class JumpPadController : MonoBehaviour
             }
             if (isLeftHandOnPad)
             {
-                leftHandRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                leftHandRigidbody.AddForce(Vector2.up * jumpPower * 1.3f, ForceMode2D.Impulse);
             }
             if (isRightHandOnPad)
             {
-                rightHandRigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                rightHandRigidbody.AddForce(Vector2.up * jumpPower * 1.3f, ForceMode2D.Impulse);
             }
             
             activated = true;
