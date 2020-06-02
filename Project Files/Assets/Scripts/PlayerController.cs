@@ -244,7 +244,7 @@ public class PlayerController : MonoBehaviour
         {
             if (arms == 1)
             {
-                if (isControlling)
+                if (isControlling && !isLeftRetrieving)
                 {
                     isControlling = false;
                     firstHand.setControlling(true);
@@ -257,7 +257,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (arms == 0)
             {
-                if (isControlling)
+                if (isControlling && !(isLeftRetrieving || isRightRetrieving))
                 {
                     isControlling = false;
                     firstHand.setControlling(true);
@@ -380,4 +380,19 @@ public class PlayerController : MonoBehaviour
 
     public void setControlling(bool input)
     { isControlling = input; }
+
+    public bool getLeftRetrieving() 
+    { return isLeftRetrieving; }
+
+    public bool getRightRetrieving() 
+    { return isRightRetrieving; }
+
+    public void setLeftRetrieving(bool input) 
+    { isLeftRetrieving = input; }
+
+    public void setRightRetrieving(bool input) 
+    { isRightRetrieving = input; }
+
+    public short getArms() 
+    { return arms; }
 }

@@ -11,8 +11,11 @@ public class HandController : MonoBehaviour
     private Animator        anim;
     public float            retrieveSpeed;
     public float            moveSpeed;
+    public float            checkRectX;
+    public float            checkRectY;
     private short           dir;
     private short           lastDir;
+    private bool            isFireComplete;
     private bool            isControlling;
     private bool            isMovable;
 
@@ -37,6 +40,7 @@ public class HandController : MonoBehaviour
         anim                = GetComponent<Animator>();
         dir                 = 1;
         lastDir             = 1;
+        isFireComplete      = false;
         isControlling       = false;
         isMovable           = true;
 
@@ -53,6 +57,7 @@ public class HandController : MonoBehaviour
 
     private void Update()
     {
+        GroundCheck();
         if (!isControlling)
         {
             Retrieve();
@@ -102,7 +107,7 @@ public class HandController : MonoBehaviour
         boxCollider.isTrigger   = true;
         rigidBody.gravityScale  = 0f;
         rigidBody.mass          = 0f;
-        isMovable               = true;
+        isMovable               = false;
         isRetrieving            = true;
     }
 
@@ -128,16 +133,16 @@ public class HandController : MonoBehaviour
                 rigidBody           .mass = mass;
                 boxCollider         .isTrigger = false;
                 gameObject          .SetActive(false);
+                isFireComplete      = false;
                 isRetrieving        = false;
                 isRetrieveComplete  = true;
             }
         }
     }
-    
 
     private void Move()
     {
-       // Camera position setting
+        // Camera position setting
         Vector3 cameraPosition = transform.position;
         cameraPosition.z = -100;
         cameraPosition.y += 7;
@@ -148,6 +153,7 @@ public class HandController : MonoBehaviour
         if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
         if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
 
+        // User input calculated
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
 
         if (movement.x > 0)
@@ -166,6 +172,19 @@ public class HandController : MonoBehaviour
         }
 
         if (isMovable) rigidBody.transform.Translate(movement);
+    }
+
+    private void GroundCheck()
+     {
+        // If the hand didn't touch ground after it was initially fired, it can't move
+        if (!isFireComplete) {
+            isMovable = false;
+            isFireComplete = Physics2D.OverlapBox(transform.position, new Vector2(checkRectX, checkRectY), 0.0f, LayerMask.GetMask("Ground"));
+            if (isFireComplete) 
+            {
+                isMovable = true;
+            }
+        }
     }
 
     private void AnimationControl()
@@ -212,4 +231,6 @@ public class HandController : MonoBehaviour
     public void setMovable(bool isMovable) { this.isMovable = isMovable; }
 
     public bool getRetrieveComplete() { return isRetrieveComplete; }
+
+    private void OnDrawGizmos() { Gizmos.DrawWireCube(transform.position, new Vector3(checkRectX, checkRectY, 0)); }
 }

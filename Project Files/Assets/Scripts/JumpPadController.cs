@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class JumpPadController : MonoBehaviour
 {
-    public Rigidbody2D              playerRigidbody;
-    public Rigidbody2D              leftHandRigidbody;
-    public Rigidbody2D              rightHandRigidbody;
+    private Rigidbody2D             playerRigidbody;
+    private Rigidbody2D             leftHandRigidbody;
+    private Rigidbody2D             rightHandRigidbody;
     public GameObject               playerCheck;
+    public GameObject               player;
     public GameObject               leftHand;
     public GameObject               rightHand;
     public GameObject               jumpPad;
@@ -24,6 +25,9 @@ public class JumpPadController : MonoBehaviour
 
     private void Start()
     {
+        playerRigidbody         = player.gameObject.GetComponent<Rigidbody2D>();
+        leftHandRigidbody       = leftHand.gameObject.GetComponent<Rigidbody2D>();
+        rightHandRigidbody      = rightHand.gameObject.GetComponent<Rigidbody2D>();
         jumpPadPositionBefore   = jumpPad.transform.position;
         jumpPadPositionAfter    = jumpPadPositionBefore;
         jumpPadPositionAfter.y  += 1;
