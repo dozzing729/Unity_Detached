@@ -7,12 +7,15 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Attributes")]
     public Camera       mainCamera;
     private Rigidbody2D rigidBody;
+    private Vector2     blockCheck;
     public float        moveSpeed;
     public float        jumpHeight;
+    public float        blockDistance;
     private bool        isGrounded;
     private bool        isJumping;
     private bool        isMovable;
     private bool        isControlling;
+    private bool        isBlocked;
 
     [Header("Shoot Attributes")]
     public HandController   firstHand;
@@ -43,6 +46,7 @@ public class PlayerController : MonoBehaviour
         isMovable       = true;
         isJumping       = false;
         isControlling   = true;
+        isBlocked       = false;
 
         // Shoot attributes
         power               = 0.0f;
@@ -61,6 +65,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         GroundCheck();
+        BlockCheck();
         if (isControlling)
         {
             Jump();
@@ -74,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded      = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Ground"));
+        isGrounded = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Ground"));
 
         if (!isGrounded)
             isGrounded  = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Left Hand"));
@@ -87,6 +92,12 @@ public class PlayerController : MonoBehaviour
             state       = State.jump_air;
             isJumping   = false;
         }
+    }
+
+    private void BlockCheck() {
+        blockCheck  = new Vector2(transform.position.x + lastDir * 1.5f, transform.position.y);
+        isBlocked   = Physics2D.OverlapBox(blockCheck, new Vector2(0.2f, 1.0f), 0.0f, LayerMask.GetMask("Wall"))
+                    || Physics2D.OverlapBox(blockCheck, new Vector2(0.2f, 1.0f), 0.0f, LayerMask.GetMask("Ground"));
     }
 
     private void Move()
@@ -131,10 +142,9 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (isMovable)
+        if (isMovable && !isBlocked)
         {
             Vector2 currentPosition = gameObject.transform.position;
-            //rigidBody.MovePosition(currentPosition + movement);
             transform.Translate(movement);
         }
 
@@ -370,7 +380,10 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnDrawGizmos()
-    { Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius); }
+    { 
+        Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius);
+        Gizmos.DrawWireCube(blockCheck, new Vector2(0.2f, 1.0f) * blockDistance);
+    }
 
     public short getDir()
     { return lastDir; }

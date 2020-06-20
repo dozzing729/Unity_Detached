@@ -793,6 +793,7 @@ MonoBehaviour:
   mainCamera: {fileID: 304786600}
   moveSpeed: 15
   jumpHeight: 25
+  blockDistance: 1.65
   firstHand: {fileID: 718152426}
   secondHand: {fileID: 711674879}
   powerLimit: 15
@@ -3503,7 +3504,7 @@ GameObject:
   - component: {fileID: 462026629}
   - component: {fileID: 462026631}
   - component: {fileID: 462026630}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4481,7 +4482,7 @@ GameObject:
   - component: {fileID: 582675114}
   - component: {fileID: 582675113}
   - component: {fileID: 582675112}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7915,7 +7916,7 @@ GameObject:
   - component: {fileID: 875967660}
   - component: {fileID: 875967662}
   - component: {fileID: 875967661}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: jump_pad_bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11218,7 +11219,7 @@ GameObject:
   - component: {fileID: 1350579724}
   - component: {fileID: 1350579723}
   - component: {fileID: 1350579722}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14917,7 +14918,7 @@ GameObject:
   - component: {fileID: 1853265525}
   - component: {fileID: 1853265524}
   - component: {fileID: 1853265523}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15102,7 +15103,7 @@ GameObject:
   - component: {fileID: 1908182187}
   - component: {fileID: 1908182186}
   - component: {fileID: 1908182185}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
