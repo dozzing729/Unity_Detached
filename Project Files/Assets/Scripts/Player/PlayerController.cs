@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -11,7 +12,11 @@ public class PlayerController : MonoBehaviour
     public float        moveSpeed;
     public float        jumpHeight;
     public float        blockDistance;
+    public float        inertia;
+    private float       tmpInertia;
+    private short       inertiaDir;
     private bool        isGrounded;
+    private bool        isLeftGround;
     private bool        isJumping;
     private bool        isMovable;
     private bool        isControlling;
@@ -47,6 +52,9 @@ public class PlayerController : MonoBehaviour
         isJumping       = false;
         isControlling   = true;
         isBlocked       = false;
+        isLeftGround    = true;
+        tmpInertia      = inertia;
+        inertiaDir      = 1;
 
         // Shoot attributes
         power               = 0.0f;
@@ -92,6 +100,11 @@ public class PlayerController : MonoBehaviour
             state       = State.jump_air;
             isJumping   = false;
         }
+        else
+        {
+            isLeftGround    = false;
+            inertia         = tmpInertia;
+        }
     }
 
     private void BlockCheck() {
@@ -113,7 +126,9 @@ public class PlayerController : MonoBehaviour
         if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
         if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
 
+        // Create movement vector
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
+
 
         if (movement.x < 0)
         {
@@ -142,12 +157,35 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // Apply inertia
+        //if (!isGrounded)
+        //{
+        //    if (!isLeftGround)
+        //    {
+        //        inertia -= 0.005f;
+        //        if (inertia < 0)
+        //        {
+        //            inertia = tmpInertia;
+        //            isLeftGround = true;
+        //        }
+        //        else
+        //        {
+        //            movement += new Vector2(inertiaDir, 0) * inertia;
+        //        }
+        //    }
+        //}
+
+        // Move
         if (isMovable && !isBlocked)
         {
-            Vector2 currentPosition = gameObject.transform.position;
-            transform.Translate(movement);
+            makeMove(movement);
         }
 
+    }
+
+    public void makeMove(Vector2 vector)
+    {
+        transform.Translate(vector);
     }
 
     private void Jump()
@@ -164,6 +202,8 @@ public class PlayerController : MonoBehaviour
                 isStateFixed = true;
                 // Player has jumped.
                 isJumping = true;
+                // Intertia direction
+                inertiaDir = dir;
             }
         }
     }
@@ -382,7 +422,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     { 
         Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius);
-        Gizmos.DrawWireCube(blockCheck, new Vector2(0.2f, 1.0f) * blockDistance);
+        Gizmos.DrawWireCube(blockCheck, new Vector2(0.15f, 1.0f) * blockDistance);
     }
 
     public short getDir()

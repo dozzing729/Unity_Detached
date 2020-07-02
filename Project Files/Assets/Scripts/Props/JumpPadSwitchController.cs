@@ -8,15 +8,15 @@ public class JumpPadSwitchController : MonoBehaviour
     public GameObject       handCheck;
     public HandController   leftHand, rightHand;
     public float            handCheckRectX, handCheckRectY;
-    private bool            leftPlugged, rightPlugged;
-    private bool            leftHandAround, rightHandAround;
-    private bool            activated;
+    private bool            isLeftPlugged, isRightPlugged;
+    private bool            isLeftHandAround, isRightHandAround;
+    private bool            isActivated;
 
     void Start()
     {
-        leftHandAround  = false;
-        rightHandAround = false;
-        activated       = false;
+        isLeftHandAround  = false;
+        isRightHandAround = false;
+        isActivated       = false;
         plugged_green   .SetActive(false);
         plugged_red     .SetActive(false);
     }
@@ -30,8 +30,8 @@ public class JumpPadSwitchController : MonoBehaviour
 
     private void HandCheck()
     {
-        leftHandAround  = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Left Hand"));
-        rightHandAround = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Right Hand"));
+        isLeftHandAround  = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Left Hand"));
+        isRightHandAround = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Right Hand"));
     }
 
     private void ActivateSwitch()
@@ -39,16 +39,16 @@ public class JumpPadSwitchController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             // If this switch is plugged in by eiher right or left
-            if (leftPlugged || rightPlugged)
+            if (isLeftPlugged || isRightPlugged)
             {
                 // Activating switch
-                if (!activated)
+                if (!isActivated)
                 {
                     // Activate only when the plugged hand is being controlled
-                    if ((leftPlugged    &&  leftHand.getControlling()) ||
-                        (rightPlugged   &&  rightHand.getControlling()))
+                    if ((isLeftPlugged    &&  leftHand.getControlling()) ||
+                        (isRightPlugged   &&  rightHand.getControlling()))
                     {
-                        activated = true;
+                        isActivated = true;
                         Invoke("Deactivate", 0.5f);
                     }
                 }
@@ -56,15 +56,15 @@ public class JumpPadSwitchController : MonoBehaviour
             else
             {
                 // Plugging into switch
-                if (leftHandAround && !leftPlugged && leftHand.getControlling())
+                if (isLeftHandAround && !isLeftPlugged && leftHand.getControlling())
                 {
-                    leftPlugged = true;
+                    isLeftPlugged = true;
                     leftHand.SetStateAfterPlugIn();
                     return;
                 }
-                if (rightHandAround && !rightPlugged && rightHand.getControlling())
+                if (isRightHandAround && !isRightPlugged && rightHand.getControlling())
                 {
-                    rightPlugged = true;
+                    isRightPlugged = true;
                     rightHand.SetStateAfterPlugIn();
                     return;
                 }
@@ -73,16 +73,16 @@ public class JumpPadSwitchController : MonoBehaviour
     }
 
     // Swtich comes back to deactivated state, 0.5 seconds after it is activated
-    private void Deactivate() { activated = false; }
+    private void Deactivate() { isActivated = false; }
 
     private void SpriteControl()
     {
-        if (leftPlugged && !leftHandAround)     leftPlugged = false;
-        if (rightPlugged && !rightHandAround)   rightPlugged = false;
+        if (isLeftPlugged && !isLeftHandAround)     isLeftPlugged = false;
+        if (isRightPlugged && !isRightHandAround)   isRightPlugged = false;
 
-        if (leftPlugged || rightPlugged)
+        if (isLeftPlugged || isRightPlugged)
         {
-            if (activated)
+            if (isActivated)
             {
                 plugged_red.SetActive(false);
                 plugged_green.SetActive(true);
@@ -103,16 +103,16 @@ public class JumpPadSwitchController : MonoBehaviour
         }
     }
 
-    public bool getActivated() { return activated; }
+    public bool getActivated() { return isActivated; }
 
-    public bool getLeftPlugged() { return leftPlugged; }
+    public bool getLeftPlugged() { return isLeftPlugged; }
 
-    public bool getRightPlugged() { return rightPlugged; }
+    public bool getRightPlugged() { return isRightPlugged; }
 
     public void setPlugged(bool plugged)
     {
-        this.leftPlugged = plugged;
-        this.rightPlugged = plugged;
+        this.isLeftPlugged = plugged;
+        this.isRightPlugged = plugged;
     }
 
     private void OnDrawGizmos() { Gizmos.DrawWireCube(handCheck.transform.position, new Vector3(handCheckRectX, handCheckRectY, 0)); }
