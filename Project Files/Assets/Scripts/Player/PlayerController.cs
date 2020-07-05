@@ -13,10 +13,7 @@ public class PlayerController : MonoBehaviour
     public float        jumpHeight;
     public float        blockDistance;
     public float        inertia;
-    private float       tmpInertia;
-    private short       inertiaDir;
     private bool        isGrounded;
-    private bool        isLeftGround;
     private bool        isJumping;
     private bool        isMovable;
     private bool        isControlling;
@@ -52,9 +49,6 @@ public class PlayerController : MonoBehaviour
         isJumping       = false;
         isControlling   = true;
         isBlocked       = false;
-        isLeftGround    = true;
-        tmpInertia      = inertia;
-        inertiaDir      = 1;
 
         // Shoot attributes
         power               = 0.0f;
@@ -87,23 +81,11 @@ public class PlayerController : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Ground"));
-
-        if (!isGrounded)
-            isGrounded  = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Left Hand"));
-
-        if (!isGrounded)
-            isGrounded  = Physics2D.OverlapCircle(groundCheck.transform.position, groundCheckRadius, LayerMask.GetMask("Right Hand"));
-
+        isGrounded = Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Ground"));
         if (!isGrounded)
         {
             state       = State.jump_air;
             isJumping   = false;
-        }
-        else
-        {
-            isLeftGround    = false;
-            inertia         = tmpInertia;
         }
     }
 
@@ -157,24 +139,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Apply inertia
-        //if (!isGrounded)
-        //{
-        //    if (!isLeftGround)
-        //    {
-        //        inertia -= 0.005f;
-        //        if (inertia < 0)
-        //        {
-        //            inertia = tmpInertia;
-        //            isLeftGround = true;
-        //        }
-        //        else
-        //        {
-        //            movement += new Vector2(inertiaDir, 0) * inertia;
-        //        }
-        //    }
-        //}
-
         // Move
         if (isMovable && !isBlocked)
         {
@@ -200,17 +164,18 @@ public class PlayerController : MonoBehaviour
                 Invoke("MakeJump", 0.3f);
                 // Player's state is fixed while jump_ready animation is playing.
                 isStateFixed = true;
-                // Player has jumped.
+                // Player has jumped. This flag prevents the character to jump multiple times before departing the ground.
                 isJumping = true;
-                // Intertia direction
-                inertiaDir = dir;
             }
         }
     }
 
     private void MakeJump()
     {
-        rigidBody.AddForce(new Vector2(0f, jumpHeight), ForceMode2D.Impulse);
+        if (isGrounded)
+        {
+            rigidBody.AddForce(new Vector2(0f, jumpHeight), ForceMode2D.Impulse);
+        }
         isStateFixed = false;
     }
 
@@ -421,7 +386,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     { 
-        Gizmos.DrawWireSphere(groundCheck.transform.position, groundCheckRadius);
+        Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f));
         Gizmos.DrawWireCube(blockCheck, new Vector2(0.15f, 1.0f) * blockDistance);
     }
 
