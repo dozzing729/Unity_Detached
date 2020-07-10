@@ -9,10 +9,10 @@ public class PlayerController : MonoBehaviour
     public Camera       mainCamera;
     private Rigidbody2D rigidBody;
     private Vector2     blockCheck;
+    public Vector2      velocity;
     public float        moveSpeed;
     public float        jumpHeight;
     public float        blockDistance;
-    public float        inertia;
     private bool        isGrounded;
     private bool        isJumping;
     private bool        isMovable;
@@ -97,6 +97,9 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
+        Vector3 pos = transform.localPosition;
+        
+
         // Camera position setting
         Vector3 cameraPosition = transform.position;
         cameraPosition.z = -100;
@@ -116,40 +119,39 @@ public class PlayerController : MonoBehaviour
         {
             dir     = -1;
             lastDir = -1;
-            if (isGrounded)
+            pos.x -= velocity.x * Time.deltaTime;
+            if (!isStateFixed)
             {
-                if (!isStateFixed) state = State.walk;
+                state = State.walk;
             }
         }
         if (movement.x > 0)
         {
             dir     = 1;
             lastDir = 1;
-            if (isGrounded)
+            pos.x += velocity.x * Time.deltaTime;
+            if (!isStateFixed)
             {
-                if (!isStateFixed) state = State.walk;
+                state = State.walk;
             }
         }
         if (movement.x == 0)
         {
             dir = 0;
-            if (isGrounded)
-            {
-                if (!isStateFixed) state = State.idle;
-            }
+            if (!isStateFixed) state = State.idle;
         }
 
         // Move
         if (isMovable && !isBlocked)
         {
-            makeMove(movement);
+            makeMove(pos);
         }
 
     }
 
-    public void makeMove(Vector2 vector)
-    {
-        transform.Translate(vector);
+    public void makeMove(Vector3 pos)
+    { 
+        transform.localPosition = pos;
     }
 
     private void Jump()
@@ -174,7 +176,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
-            rigidBody.AddForce(new Vector2(0f, jumpHeight), ForceMode2D.Impulse);
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
+            GetComponent<PhysicalObject>().ApplyInertia(dir, moveSpeed / 2);
         }
         isStateFixed = false;
     }

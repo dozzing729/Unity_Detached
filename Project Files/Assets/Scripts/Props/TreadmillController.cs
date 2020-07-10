@@ -4,65 +4,38 @@ using UnityEngine;
 
 public class TreadmillController : MonoBehaviour
 {
-    public float            moveSpeed;
-    public float            inertia;
-    private float           tmpInertia;
-    public PlayerController player;
-    private bool            isGrounded;
-    private bool            isLeftGround;
-    public short            direction;
+    private Transform   objectOnTreadmill;
+    public short        dir;
+    public float        speed;
 
-    void Start()
-    {
-        isLeftGround    = true;
-        tmpInertia      = inertia;
-    }
-
-    void Update()
-    {
-        Move();
-    }
-
-    // add movement vector to the player's position
     private void Move()
     {
-        if (isGrounded)
-        {
-            Vector2 movement = new Vector2(direction, 0) * moveSpeed;
-            player.makeMove(movement);
-        }
-        else
-        {
-            if (!isLeftGround)
-            {
-                inertia -= 0.004f;
-                if (inertia < 0)
-                {
-                    isLeftGround    = true;
-                    inertia         = tmpInertia;
-                    return;
-                }
-                Vector2 movement = new Vector2(direction, 0) * inertia;
-                player.makeMove(movement);
-            }
-        }
+        //Vector2 moveVector = new Vector2(dir, 0) * speed * Time.fixedDeltaTime;
+        Vector2 newPosition = objectOnTreadmill.position;
+        newPosition.x += dir * speed * Time.deltaTime;
+        objectOnTreadmill.localPosition = newPosition;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.collider.tag == "Player")
+        // determine if objects on the treadmill are supposed to move
+        if (collision.collider.tag == "Player" ||
+            collision.collider.tag == "Hand" ||
+            collision.collider.tag == "Interactive")
         {
-            isGrounded      = true;
-            isLeftGround    = false;
-            inertia         = tmpInertia;
+            // move the objects
+            objectOnTreadmill = collision.collider.transform;
+            Move();
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.tag == "Player")
+        if (collision.collider.tag == "Player" ||
+           collision.collider.tag == "Hand" ||
+           collision.collider.tag == "Interactive")
         {
-            isGrounded = false;
+            collision.gameObject.GetComponent<PhysicalObject>().ApplyInertia(dir, speed);
         }
     }
 }

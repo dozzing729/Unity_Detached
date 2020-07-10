@@ -546,10 +546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8da4c9458cf74b64e8cd35598a1f6058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.2
-  inertia: 0.2
-  player: {fileID: 1557997636}
-  direction: -1
+  dir: -1
+  speed: 8
 --- !u!1 &1200995163
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,6 +1154,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ffb66acb27cce4a8f0b302415d5dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1557997642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557997635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c97500023c56b419e72ec1bef75a71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showValues: 1
 --- !u!1001 &1594606835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1503,6 +1514,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4200882710565440737, guid: 7de4a1535c057234c8018f9a2bfd536a,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4200882710565440738, guid: 7de4a1535c057234c8018f9a2bfd536a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1587,6 +1603,11 @@ PrefabInstance:
         type: 3}
       propertyPath: groundCheckRadius
       value: 0.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 4200882710565440741, guid: 7de4a1535c057234c8018f9a2bfd536a,
+        type: 3}
+      propertyPath: velocity.x
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7de4a1535c057234c8018f9a2bfd536a, type: 3}
