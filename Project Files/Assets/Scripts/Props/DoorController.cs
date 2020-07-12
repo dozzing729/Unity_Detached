@@ -9,13 +9,18 @@ public class DoorController : MonoBehaviour
     public GameObject       door;
     public HandController   leftHand, rightHand;
     public float            handCheckRectX, handCheckRectY;
+    public int              waitToPlugOut;
+    private int             counter;
     private bool            isLeftPlugged, isRightPlugged;
     private bool            isLeftHandAround, isRightHandAround;
+    private bool            isPlugOutEnabled;
 
     void Start()
     {
-        isLeftHandAround  = false;
-        isRightHandAround = false;
+        isLeftHandAround    = false;
+        isRightHandAround   = false;
+        isPlugOutEnabled    = false;
+        counter             = waitToPlugOut;
         plugged_green   .SetActive(false);
     }
 
@@ -51,42 +56,65 @@ public class DoorController : MonoBehaviour
                 return;
             }
         }
+        if (Input.GetKey(KeyCode.Q) && isPlugOutEnabled)
+        {
+            if (isLeftPlugged && leftHand.getControlling())
+            {
+                if (counter++ > waitToPlugOut)
+                {
+                    isLeftPlugged = false;
+                    leftHand.SetStateAfterPlugOut();
+                    isPlugOutEnabled = false;
+                }
+            }
+            if (isRightPlugged && rightHand.getControlling())
+            {
+                if (counter++ > waitToPlugOut)
+                {
+                    isRightPlugged = false;
+                    rightHand.SetStateAfterPlugOut();
+                    isPlugOutEnabled = false;
+                }
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            counter = 0;
+            if ((isLeftPlugged && leftHand.getControlling()) || (isRightPlugged && rightHand.getControlling()))
+            {
+                isPlugOutEnabled = true;
+            }
+        }
     }
 
     private void SpriteControl()
     {
-        if (isLeftPlugged && !isLeftHandAround)
+        if (!isLeftHandAround)
         {
             isLeftPlugged = false;
-            door.SetActive(true);
-        }    
-        if (isRightPlugged && !isRightHandAround) 
+        }
+        if (!isRightHandAround)
         {
             isRightPlugged = false;
-            door.SetActive(true);
         }
-
+        
         if (isLeftPlugged || isRightPlugged)
         {
             plugged_green.SetActive(true);
             unplugged_switch.SetActive(false);
+            door.SetActive(false);
         }
         else
         {
             plugged_green.SetActive(false);
             unplugged_switch.SetActive(true);
+            door.SetActive(true);
         }
     }
 
     public bool getLeftPlugged() { return isLeftPlugged; }
 
     public bool getRightPlugged() { return isRightPlugged; }
-
-    public void setPlugged(bool plugged)
-    {
-        this.isLeftPlugged = plugged;
-        this.isRightPlugged = plugged;
-    }
 
     private void OnDrawGizmos() { Gizmos.DrawWireCube(handCheck.transform.position, new Vector3(handCheckRectX, handCheckRectY, 0)); }
 }

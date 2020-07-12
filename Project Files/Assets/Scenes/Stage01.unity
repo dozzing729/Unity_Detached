@@ -641,6 +641,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &200062063
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,6 +696,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &257755586
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,6 +752,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &304786598
 GameObject:
   m_ObjectHideFlags: 0
@@ -2959,6 +2962,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &453967057
 GameObject:
   m_ObjectHideFlags: 0
@@ -2996,6 +3000,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!4 &453967059
 Transform:
   m_ObjectHideFlags: 0
@@ -3962,6 +3967,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &556565581
 GameObject:
   m_ObjectHideFlags: 0
@@ -5102,6 +5108,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!4 &751236951
 Transform:
   m_ObjectHideFlags: 0
@@ -5371,6 +5378,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!4 &827703566
 Transform:
   m_ObjectHideFlags: 0
@@ -7228,6 +7236,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &999099084
 GameObject:
   m_ObjectHideFlags: 0
@@ -15757,6 +15766,7 @@ MonoBehaviour:
   rightHand: {fileID: 711674879}
   handCheckRectX: 2.5
   handCheckRectY: 3
+  waitToPlugOut: 30
 --- !u!1 &2072808297
 GameObject:
   m_ObjectHideFlags: 0
@@ -16036,6 +16046,11 @@ PrefabInstance:
       propertyPath: rightHand
       value: 
       objectReference: {fileID: 711674879}
+    - target: {fileID: 3268773149697852344, guid: da75eb8aa0a4d5343a5f1212e04da9c2,
+        type: 3}
+      propertyPath: waitToPlugOut
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 3268773149697852345, guid: da75eb8aa0a4d5343a5f1212e04da9c2,
         type: 3}
       propertyPath: m_Name
@@ -16105,6 +16120,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4200882710150230879, guid: 7de4a1535c057234c8018f9a2bfd536a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10.2
+      objectReference: {fileID: 0}
     - target: {fileID: 4200882710565440542, guid: 7de4a1535c057234c8018f9a2bfd536a,
         type: 3}
       propertyPath: m_Name
@@ -16204,6 +16224,11 @@ PrefabInstance:
       propertyPath: rightHand
       value: 
       objectReference: {fileID: 711674879}
+    - target: {fileID: 4430636893746905305, guid: 0521c520102613b4ab37bbc2f672cab3,
+        type: 3}
+      propertyPath: waitToPlugOut
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4430636893746905306, guid: 0521c520102613b4ab37bbc2f672cab3,
         type: 3}
       propertyPath: m_Name

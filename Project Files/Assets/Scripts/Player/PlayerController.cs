@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     public Camera       mainCamera;
     private Rigidbody2D rigidBody;
     private Vector2     blockCheck;
-    public Vector2      velocity;
     public float        moveSpeed;
     public float        jumpHeight;
     public float        blockDistance;
@@ -96,10 +95,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Move()
-    {
-        Vector3 pos = transform.localPosition;
-        
-
+    {   
         // Camera position setting
         Vector3 cameraPosition = transform.position;
         cameraPosition.z = -100;
@@ -119,8 +115,7 @@ public class PlayerController : MonoBehaviour
         {
             dir     = -1;
             lastDir = -1;
-            pos.x -= velocity.x * Time.deltaTime;
-            if (!isStateFixed)
+            if (!isStateFixed && isGrounded)
             {
                 state = State.walk;
             }
@@ -129,8 +124,7 @@ public class PlayerController : MonoBehaviour
         {
             dir     = 1;
             lastDir = 1;
-            pos.x += velocity.x * Time.deltaTime;
-            if (!isStateFixed)
+            if (!isStateFixed && isGrounded)
             {
                 state = State.walk;
             }
@@ -138,20 +132,23 @@ public class PlayerController : MonoBehaviour
         if (movement.x == 0)
         {
             dir = 0;
-            if (!isStateFixed) state = State.idle;
+            if (!isStateFixed && isGrounded)
+            {
+                state = State.idle;
+            }
         }
 
         // Move
         if (isMovable && !isBlocked)
         {
-            makeMove(pos);
+            makeMove(movement);
         }
 
     }
 
     public void makeMove(Vector3 pos)
-    { 
-        transform.localPosition = pos;
+    {
+        transform.Translate(pos);
     }
 
     private void Jump()
@@ -176,10 +173,9 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
-            GetComponent<PhysicalObject>().ApplyInertia(dir, moveSpeed / 2);
+            rigidBody.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
+            isStateFixed = false;
         }
-        isStateFixed = false;
     }
 
     private void Shoot()
