@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Stage01.unity
+    path: Assets/Scenes/tempStage.unity
     guid: 3320dfe866dda496eb5f175c9d47fdcf
   - enabled: 1
-    path: Assets/Scenes/Stage02.unity
+    path: Assets/Scenes/tempStage2.unity
     guid: 064d81b68783346f89faf19619de062d
   - enabled: 1
     path: Assets/Scenes/Stage03.unity

@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviour
     public float        jumpHeight;
     public float        blockDistance;
     private bool        isGrounded;
-    private bool        isJumping;
     private bool        isMovable;
     private bool        isControlling;
     private bool        isBlocked;
@@ -25,6 +24,7 @@ public class PlayerController : MonoBehaviour
     public float            powerIncrement;
     private float           power;
     private short           arms;
+    public short            enabledArms;
     private bool            isLeftRetrieving;
     private bool            isRightRetrieving;
 
@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     private Animator    animator;
     private short       dir;
     private short       lastDir;
-    private enum        State { idle, walk, jump_ready, jump_air, charge, fire };
+    private enum        State { idle, walk, jump, charge, fire };
     private State       state;
     private bool        isStateFixed;
 
@@ -45,13 +45,12 @@ public class PlayerController : MonoBehaviour
         // Movement attributes
         rigidBody       = GetComponent<Rigidbody2D>();
         isMovable       = true;
-        isJumping       = false;
         isControlling   = true;
         isBlocked       = false;
 
         // Shoot attributes
         power               = 0.0f;
-        arms                = 2;
+        arms                = enabledArms;
         isLeftRetrieving    = false;
         isRightRetrieving   = false;
 
@@ -83,8 +82,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Ground"));
         if (!isGrounded)
         {
-            state       = State.jump_air;
-            isJumping   = false;
+            state = State.jump;
         }
     }
 
@@ -103,9 +101,9 @@ public class PlayerController : MonoBehaviour
         mainCamera.transform.position = cameraPosition;
         
         // Camera size setting
-        mainCamera.orthographicSize = 85 + 70 * cameraPosition.y / 73;
-        if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
-        if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
+        //mainCamera.orthographicSize = 85 + 70 * cameraPosition.y / 73;
+        //if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
+        //if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
 
         // Create movement vector
         Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
@@ -115,7 +113,7 @@ public class PlayerController : MonoBehaviour
         {
             dir     = -1;
             lastDir = -1;
-            if (!isStateFixed && isGrounded)
+            if (isGrounded && !isStateFixed)
             {
                 state = State.walk;
             }
@@ -124,7 +122,7 @@ public class PlayerController : MonoBehaviour
         {
             dir     = 1;
             lastDir = 1;
-            if (!isStateFixed && isGrounded)
+            if (isGrounded && !isStateFixed)
             {
                 state = State.walk;
             }
@@ -132,7 +130,7 @@ public class PlayerController : MonoBehaviour
         if (movement.x == 0)
         {
             dir = 0;
-            if (!isStateFixed && isGrounded)
+            if (isGrounded && !isStateFixed)
             {
                 state = State.idle;
             }
@@ -141,40 +139,19 @@ public class PlayerController : MonoBehaviour
         // Move
         if (isMovable && !isBlocked)
         {
-            makeMove(movement);
+            transform.Translate(movement);
         }
 
-    }
-
-    public void makeMove(Vector3 pos)
-    {
-        transform.Translate(pos);
     }
 
     private void Jump()
     {
         if (isGrounded && isMovable)
         {
-            if (Input.GetButtonDown("Jump") && !isJumping)
+            if (Input.GetButtonDown("Jump"))
             {
-                // Jump start.
-                state = State.jump_ready;
-                // Wait until the jump_animation is finished.
-                Invoke("MakeJump", 0.3f);
-                // Player's state is fixed while jump_ready animation is playing.
-                isStateFixed = true;
-                // Player has jumped. This flag prevents the character to jump multiple times before departing the ground.
-                isJumping = true;
+                rigidBody.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
             }
-        }
-    }
-
-    private void MakeJump()
-    {
-        if (isGrounded)
-        {
-            rigidBody.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
-            isStateFixed = false;
         }
     }
 
@@ -224,12 +201,12 @@ public class PlayerController : MonoBehaviour
         // Retrieve
         if (Input.GetKeyDown(KeyCode.R) && isMovable)
         {
-            if (arms == 1)
+            if (arms == enabledArms - 1)
             {
                 isLeftRetrieving = true;
                 firstHand.StartRetrieve();
             }
-            else if (arms == 0)
+            else if (arms == enabledArms - 2)
             {
                 isLeftRetrieving    = true;
                 isRightRetrieving   = true;
@@ -325,21 +302,7 @@ public class PlayerController : MonoBehaviour
                 }
                 if (!isControlling) state = State.idle;
                 break;
-            case State.jump_ready:
-                if (lastDir == 1)
-                {
-                    if (arms == 2) animator.Play("Jump_Right_Ready_1");
-                    if (arms == 1) animator.Play("Jump_Right_Ready_2");
-                    if (arms == 0) animator.Play("Jump_Right_Ready_3");
-                }
-                if (lastDir == -1)
-                {
-                    if (arms == 2) animator.Play("Jump_Left_Ready_1");
-                    if (arms == 1) animator.Play("Jump_Left_Ready_2");
-                    if (arms == 0) animator.Play("Jump_Left_Ready_3");
-                }
-                break;
-            case State.jump_air:
+            case State.jump:
                 if (lastDir == 1)
                 {
                     if (arms == 2) animator.Play("Jump_Right_Air_1");
@@ -388,6 +351,9 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f));
         Gizmos.DrawWireCube(blockCheck, new Vector2(0.15f, 1.0f) * blockDistance);
     }
+
+    public void enableArms(short enabledArms)
+    { this.enabledArms = enabledArms; }
 
     public short getDir()
     { return lastDir; }
