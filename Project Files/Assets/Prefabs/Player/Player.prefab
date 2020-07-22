@@ -201,8 +201,9 @@ MonoBehaviour:
   secondHand: {fileID: 0}
   powerLimit: 15
   powerIncrement: 0.15
+  enabledArms: 0
   groundCheck: {fileID: 4200882710150230876}
-  groundCheckRadius: 0.99
+  groundCheckRadius: 0.9
 --- !u!114 &1557997642
 MonoBehaviour:
   m_ObjectHideFlags: 0
