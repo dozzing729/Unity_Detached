@@ -128,7 +128,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.26556015, y: -0.3492031}
+  m_Offset: {x: -0.43099213, y: -0.2912979}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -139,7 +139,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 10.343895, y: 21.811668}
+  m_Size: {x: 8.539505, y: 20.653687}
   m_EdgeRadius: 0
 --- !u!50 &4200882710565440737
 Rigidbody2D:
@@ -196,12 +196,11 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   moveSpeed: 15
   jumpHeight: 25
-  blockDistance: 4.5
+  blockDistance: 4
   firstHand: {fileID: 0}
   secondHand: {fileID: 0}
   powerLimit: 15
   powerIncrement: 0.15
-  enabledArms: 0
   groundCheck: {fileID: 4200882710150230876}
   groundCheckRadius: 0.9
 --- !u!114 &1557997642

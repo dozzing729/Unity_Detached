@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public float            powerIncrement;
     private float           power;
     private short           arms;
-    public short            enabledArms;
+    private short           enabledArms;
     private bool            isLeftRetrieving;
     private bool            isRightRetrieving;
 
@@ -79,7 +79,8 @@ public class PlayerController : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Ground"));
+        isGrounded =    Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Ground")) || 
+                        Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Physical Object"));
         if (!isGrounded)
         {
             state = State.jump;
@@ -88,8 +89,8 @@ public class PlayerController : MonoBehaviour
 
     private void BlockCheck() {
         blockCheck  = new Vector2(transform.position.x + lastDir * 1.5f, transform.position.y);
-        isBlocked   = Physics2D.OverlapBox(blockCheck, new Vector2(0.2f, 1.0f), 0.0f, LayerMask.GetMask("Wall"))
-                    || Physics2D.OverlapBox(blockCheck, new Vector2(0.2f, 1.0f), 0.0f, LayerMask.GetMask("Ground"));
+        isBlocked   =   Physics2D.OverlapBox(blockCheck, new Vector2(0.08f, 1.0f) * blockDistance, 0.0f, LayerMask.GetMask("Wall")) ||
+                        Physics2D.OverlapBox(blockCheck, new Vector2(0.08f, 1.0f) * blockDistance, 0.0f, LayerMask.GetMask("Ground"));
     }
 
     private void Move()
@@ -180,8 +181,21 @@ public class PlayerController : MonoBehaviour
                 // Player's state is fixed while the animation is playing
                 isStateFixed = true;
                 // Call HandController class's function to actually fire
-                if (arms == 2) firstHand.Fire(power);
-                if (arms == 1) secondHand.Fire(power);
+                if (arms == 2)
+                {
+                    firstHand.Fire(power);
+                }
+                if (arms == 1)
+                {
+                    if (enabledArms == 1)
+                    {
+                        firstHand.Fire(power);
+                    }
+                    else
+                    {
+                        secondHand.Fire(power);
+                    }
+                }
                 power = 0.0f;
             }
         }
@@ -201,12 +215,12 @@ public class PlayerController : MonoBehaviour
         // Retrieve
         if (Input.GetKeyDown(KeyCode.R) && isMovable)
         {
-            if (arms == enabledArms - 1)
+            if (arms == enabledArms - 1 && enabledArms != 0)
             {
                 isLeftRetrieving = true;
                 firstHand.StartRetrieve();
             }
-            else if (arms == enabledArms - 2)
+            else if (arms == enabledArms - 2 && enabledArms == 2)
             {
                 isLeftRetrieving    = true;
                 isRightRetrieving   = true;
@@ -349,7 +363,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     { 
         Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f));
-        Gizmos.DrawWireCube(blockCheck, new Vector2(0.15f, 1.0f) * blockDistance);
+        Gizmos.DrawWireCube(blockCheck, new Vector2(0.08f, 1.0f) * blockDistance);
     }
 
     public void enableArms(short enabledArms)

@@ -42,10 +42,10 @@ public class PhysicalObject : MonoBehaviour
     {
         if (showValues)
         {
-            Debug.Log("Position: " + position);
-            Debug.Log("Velocity: " + velocity);
-            Debug.Log("Speed: " + speed);
-            Debug.Log("Direction: " + direction);
+            //Debug.Log("Position: " + position);
+            //Debug.Log("Velocity: " + velocity);
+            //Debug.Log("Speed: " + speed);
+            //Debug.Log("Direction: " + direction);
         }
     }
 
