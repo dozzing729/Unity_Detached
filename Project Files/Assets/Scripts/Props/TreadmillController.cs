@@ -19,9 +19,9 @@ public class TreadmillController : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         // determine if objects on the treadmill are supposed to move
-        if (collision.collider.tag == "Player" ||
-            collision.collider.tag == "Hand" ||
-            collision.collider.tag == "Interactive")
+        if (collision.collider.CompareTag("Player") ||
+            collision.collider.CompareTag("Hand") ||
+            collision.collider.CompareTag("Physical Object"))
         {
             // move the objects
             objectOnTreadmill = collision.collider.transform;
@@ -31,9 +31,9 @@ public class TreadmillController : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.tag == "Player" ||
-           collision.collider.tag == "Hand" ||
-           collision.collider.tag == "Interactive")
+        if (collision.collider.CompareTag("Player") ||
+            collision.collider.CompareTag("Hand") ||
+            collision.collider.CompareTag("Physical Object"))
         {
             collision.gameObject.GetComponent<PhysicalObject>().ApplyInertia(dir, speed);
         }

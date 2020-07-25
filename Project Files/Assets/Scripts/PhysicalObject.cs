@@ -6,6 +6,9 @@ using UnityEngine;
 public class PhysicalObject : MonoBehaviour
 {
     public Boolean showValues;
+    private Boolean isDestroyed;
+    public GameObject normalSprite;
+    public GameObject destroyedSprite;
     private new Rigidbody2D rigidbody;
     private new Transform transform;
     private Vector3 position;
@@ -15,30 +18,28 @@ public class PhysicalObject : MonoBehaviour
     
     void Start()
     {
+        isDestroyed = false;
+        normalSprite.SetActive(true);
+        destroyedSprite.SetActive(false);
         rigidbody   = GetComponent<Rigidbody2D>();
         transform   = GetComponent<Transform>();
     }
 
     void Update()
     {
-        position    = transform.position;
-        velocity    = rigidbody.velocity;
-        speed       = velocity.magnitude;
+        position = transform.position;
+        velocity = rigidbody.velocity;
+        speed = velocity.magnitude;
 
-        if (velocity.x > 0)     direction = 1;
-        if (velocity.x == 0)    direction = 0;
-        if (velocity.x < 0)     direction = -1;
+        if (velocity.x > 0) direction = 1;
+        if (velocity.x == 0) direction = 0;
+        if (velocity.x < 0) direction = -1;
 
         ShowValues();
+        SpriteControl();
     }
 
-    public void ApplyInertia(short dir, float inertia)
-    {
-        Vector2 inertiaVector = new Vector2(dir, 0) * inertia * Time.deltaTime * 30;
-        rigidbody.AddForce(inertiaVector, ForceMode2D.Impulse);
-    }
-
-    public void ShowValues()
+    private void ShowValues()
     {
         if (showValues)
         {
@@ -49,6 +50,28 @@ public class PhysicalObject : MonoBehaviour
         }
     }
 
+    private void SpriteControl()
+    {
+        if (isDestroyed)
+        {
+            normalSprite.SetActive(false);
+            destroyedSprite.SetActive(true);
+        }
+        else
+        {
+            normalSprite.SetActive(true);
+            destroyedSprite.SetActive(false);
+        }
+    }
+
+    public void ApplyInertia(short dir, float force)
+    {
+        Vector2 inertiaVector = new Vector2(dir, 0) * force * Time.deltaTime * 30;
+        rigidbody.AddForce(inertiaVector, ForceMode2D.Impulse);
+    }
+
+    public Boolean GetDestroyed() { return isDestroyed; }
+    public void SetDestroyed(Boolean isDestroyed) { this.isDestroyed = isDestroyed; }
     public Rigidbody2D GetRigidbody() { return rigidbody; }
     public Transform GetTransform() { return transform; }
     public Vector3 GetPosition() { return position; }

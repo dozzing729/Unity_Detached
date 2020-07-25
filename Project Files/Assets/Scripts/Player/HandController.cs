@@ -6,21 +6,21 @@ using UnityEngine;
 public class HandController : MonoBehaviour
 {
     [Header("Movement Attributes")]
-    public PlayerController playerController;
-    public Camera           mainCamera;
-    private Animator        anim;
-    public float            retrieveSpeed;
-    public float            moveSpeed;
-    public float            checkRectX;
-    public float            checkRectY;
-    private short           dir;
-    private short           lastDir;
-    private bool            isFireComplete;
-    private bool            isControlling;
-    private bool            isMovable;
+    public GameObject           player;
+    private PlayerController    playerController;
+    public Camera               mainCamera;
+    private Animator            anim;
+    public float                retrieveSpeed;
+    public float                moveSpeed;
+    public float                checkRectX;
+    public float                checkRectY;
+    private short               dir;
+    private short               lastDir;
+    private bool                isFireComplete;
+    private bool                isControlling;
+    private bool                isMovable;
 
     [Header("Retrieve Attributes")]
-    public GameObject       player;
     private SpriteRenderer  sprite;
     private Rigidbody2D     rigidBody;
     private BoxCollider2D   boxCollider;
@@ -37,6 +37,7 @@ public class HandController : MonoBehaviour
         gameObject.SetActive(false);
 
         // Movement Attributes
+        playerController    = player.GetComponent<PlayerController>();
         anim                = GetComponent<Animator>();
         dir                 = 1;
         lastDir             = 1;
