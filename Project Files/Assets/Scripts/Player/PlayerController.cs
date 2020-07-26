@@ -141,6 +141,10 @@ public class PlayerController : MonoBehaviour
         if (isMovable && !isBlocked)
         {
             transform.Translate(movement);
+            /*if (rigidBody.velocity.magnitude < moveSpeed)
+            {
+                rigidBody.AddForce(new Vector2(dir * 2, 0), ForceMode2D.Impulse);
+            }*/
         }
 
     }
