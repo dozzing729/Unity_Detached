@@ -3,69 +3,70 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : PhysicalObject
 {
     [Header("Movement Attributes")]
-    public Camera       mainCamera;
+    public Camera mainCamera;
     private Rigidbody2D rigidBody;
-    private Vector2     blockCheck;
-    public float        moveSpeed;
-    public float        jumpHeight;
-    public float        blockDistance;
-    private bool        isGrounded;
-    private bool        isMovable;
-    private bool        isControlling;
-    private bool        isBlocked;
+    public float moveSpeed;
+    public float jumpHeight;
+    private float treadmillVelocity;
+    private bool isOnTreadmill;
+    private bool isGrounded;
+    private bool isMovable;
+    private bool isControlling;
 
     [Header("Shoot Attributes")]
-    public HandController   firstHand;
-    public HandController   secondHand;
-    public float            powerLimit;
-    public float            powerIncrement;
-    private float           power;
-    private short           arms;
-    private short           enabledArms;
-    private bool            isLeftRetrieving;
-    private bool            isRightRetrieving;
+    public HandController firstHand;
+    public HandController secondHand;
+    public float powerLimit;
+    public float powerIncrement;
+    private float power;
+    private short arms;
+    private short enabledArms;
+    private bool isLeftRetrieving;
+    private bool isRightRetrieving;
 
     [Header("Ground Check Attributes")]
-    public GameObject   groundCheck;
-    public float        groundCheckRadius;
+    public GameObject groundCheck;
+    public float groundCheckWidth;
 
     [Header("Animation Attributes")]
-    private Animator    animator;
-    private short       dir;
-    private short       lastDir;
-    private enum        State { idle, walk, jump, charge, fire };
-    private State       state;
-    private bool        isStateFixed;
+    private Animator animator;
+    private short dir;
+    private short lastDir;
+    private enum State { idle, walk, jump, charge, fire };
+    private State state;
+    private bool isStateFixed;
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         // Movement attributes
-        rigidBody       = GetComponent<Rigidbody2D>();
-        isMovable       = true;
-        isControlling   = true;
-        isBlocked       = false;
+        rigidBody = GetComponent<Rigidbody2D>();
+        treadmillVelocity = 0;
+        isOnTreadmill = false;
+        isMovable = true;
+        isControlling = true;
 
         // Shoot attributes
-        power               = 0.0f;
-        arms                = enabledArms;
-        isLeftRetrieving    = false;
-        isRightRetrieving   = false;
+        power = 0.0f;
+        arms = enabledArms;
+        isLeftRetrieving = false;
+        isRightRetrieving = false;
 
         // Animation attributes
-        animator        = GetComponent<Animator>();
-        dir             = 0;
-        lastDir         = 1;
-        state           = State.idle;
-        isStateFixed    = false;
+        animator = GetComponent<Animator>();
+        dir = 0;
+        lastDir = 1;
+        state = State.idle;
+        isStateFixed = false;
     }
 
-    private void Update()
+    private new void Update()
     {
+        base.Update();
         GroundCheck();
-        BlockCheck();
         if (isControlling)
         {
             Jump();
@@ -79,38 +80,32 @@ public class PlayerController : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded =    Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Ground")) || 
-                        Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f), 0.0f, LayerMask.GetMask("Physical Object"));
+        isGrounded = Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f), 0.0f, LayerMask.GetMask("Ground")) ||
+                     Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f), 0.0f, LayerMask.GetMask("Wall")) ||
+                     Physics2D.OverlapBox(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f), 0.0f, LayerMask.GetMask("Physical Object"));
         if (!isGrounded)
         {
             state = State.jump;
         }
     }
 
-    private void BlockCheck() {
-        blockCheck  = new Vector2(transform.position.x + lastDir * 1.5f, transform.position.y);
-        isBlocked   =   Physics2D.OverlapBox(blockCheck, new Vector2(0.08f, 1.0f) * blockDistance, 0.0f, LayerMask.GetMask("Wall")) ||
-                        Physics2D.OverlapBox(blockCheck, new Vector2(0.08f, 1.0f) * blockDistance, 0.0f, LayerMask.GetMask("Ground"));
-    }
-
     private void Move()
-    {   
+    {
         // Camera position setting
         Vector3 cameraPosition = transform.position;
         cameraPosition.z = -100;
         cameraPosition.y += 7;
         mainCamera.transform.position = cameraPosition;
-        
+
         // Camera size setting
         //mainCamera.orthographicSize = 85 + 70 * cameraPosition.y / 73;
         //if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
         //if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
 
-        // Create movement vector
-        Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
+        // User input movement
+        float horizontal = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
 
-
-        if (movement.x < 0)
+        if (horizontal < 0)
         {
             dir     = -1;
             lastDir = -1;
@@ -119,7 +114,7 @@ public class PlayerController : MonoBehaviour
                 state = State.walk;
             }
         }
-        if (movement.x > 0)
+        if (horizontal > 0)
         {
             dir     = 1;
             lastDir = 1;
@@ -128,7 +123,7 @@ public class PlayerController : MonoBehaviour
                 state = State.walk;
             }
         }
-        if (movement.x == 0)
+        if (horizontal == 0)
         {
             dir = 0;
             if (isGrounded && !isStateFixed)
@@ -138,13 +133,23 @@ public class PlayerController : MonoBehaviour
         }
 
         // Move
-        if (isMovable && !isBlocked)
+        if (isMovable)
         {
-            transform.Translate(movement);
-            /*if (rigidBody.velocity.magnitude < moveSpeed)
+            float vertical = rigidBody.velocity.y;
+
+            if (isOnTreadmill)
             {
-                rigidBody.AddForce(new Vector2(dir * 2, 0), ForceMode2D.Impulse);
-            }*/
+                horizontal += treadmillVelocity * Time.deltaTime;
+                rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
+            }
+            else
+            {
+                if (horizontal != 0)
+                {
+                    rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
+                }
+            }
+            Debug.Log(rigidBody.velocity);
         }
 
     }
@@ -155,7 +160,10 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump"))
             {
-                rigidBody.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
+                //rigidBody.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
+                float horizontal = rigidBody.velocity.x * Time.deltaTime;
+                float vertical = (rigidBody.velocity.y + jumpHeight) * Time.deltaTime;
+                rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
             }
         }
     }
@@ -208,9 +216,9 @@ public class PlayerController : MonoBehaviour
     private void MakeShoot()
     {
         // Once firing is done, player is able to move, change state and an arm is reduced.
-        isMovable       = true;
-        isStateFixed    = false;
-        state           = State.idle;
+        isMovable = true;
+        isStateFixed = false;
+        state = State.idle;
         arms--;
     }
 
@@ -226,10 +234,10 @@ public class PlayerController : MonoBehaviour
             }
             else if (arms == enabledArms - 2 && enabledArms == 2)
             {
-                isLeftRetrieving    = true;
-                isRightRetrieving   = true;
-                firstHand   .StartRetrieve();
-                secondHand  .StartRetrieve();
+                isLeftRetrieving = true;
+                isRightRetrieving = true;
+                firstHand.StartRetrieve();
+                secondHand.StartRetrieve();
             }
         }
 
@@ -273,8 +281,8 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (firstHand.getControlling())
                 {
-                    firstHand   .setControlling(false);
-                    secondHand  .setControlling(true);
+                    firstHand.setControlling(false);
+                    secondHand.setControlling(true);
                 }
                 else
                 {
@@ -365,10 +373,18 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnDrawGizmos()
-    { 
-        Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckRadius, 0.5f));
-        Gizmos.DrawWireCube(blockCheck, new Vector2(0.08f, 1.0f) * blockDistance);
+    {
+        Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f));
     }
+
+    public void SetTreadmillVelocity(float treadmillVelocity)
+    { this.treadmillVelocity = treadmillVelocity; }
+
+    public bool GetOnTreadMill()
+    { return isOnTreadmill; }
+
+    public void SetOnTreadmill(bool isOnTreadmill)
+    { this.isOnTreadmill = isOnTreadmill; }
 
     public void enableArms(short enabledArms)
     { this.enabledArms = enabledArms; }
@@ -382,18 +398,18 @@ public class PlayerController : MonoBehaviour
     public void setControlling(bool input)
     { isControlling = input; }
 
-    public bool getLeftRetrieving() 
+    public bool getLeftRetrieving()
     { return isLeftRetrieving; }
 
-    public bool getRightRetrieving() 
+    public bool getRightRetrieving()
     { return isRightRetrieving; }
 
-    public void setLeftRetrieving(bool input) 
+    public void setLeftRetrieving(bool input)
     { isLeftRetrieving = input; }
 
-    public void setRightRetrieving(bool input) 
+    public void setRightRetrieving(bool input)
     { isRightRetrieving = input; }
 
-    public short getArms() 
+    public short getArms()
     { return arms; }
 }

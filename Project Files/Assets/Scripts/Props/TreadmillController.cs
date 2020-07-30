@@ -4,38 +4,54 @@ using UnityEngine;
 
 public class TreadmillController : MonoBehaviour
 {
-    private Transform   objectOnTreadmill;
     public short        dir;
     public float        speed;
-
-    private void Move()
-    {
-        //Vector2 moveVector = new Vector2(dir, 0) * speed * Time.fixedDeltaTime;
-        Vector2 newPosition = objectOnTreadmill.position;
-        newPosition.x += dir * speed * Time.deltaTime;
-        objectOnTreadmill.localPosition = newPosition;
-    }
-
+    
     private void OnCollisionStay2D(Collision2D collision)
     {
         // determine if objects on the treadmill are supposed to move
-        if (collision.collider.CompareTag("Player") ||
-            collision.collider.CompareTag("Hand") ||
-            collision.collider.CompareTag("Physical Object"))
+        if (collision.collider.CompareTag("Physical Object"))
         {
-            // move the objects
-            objectOnTreadmill = collision.collider.transform;
-            Move();
+            GameObject objectOnTreadmill = collision.gameObject;
+            Rigidbody2D rb = objectOnTreadmill.GetComponent<Rigidbody2D>();
+
+            if (rb.velocity.magnitude < speed)
+            {
+                float horizontal = dir * speed * Time.deltaTime;
+                float vertical = rb.velocity.y * Time.deltaTime;
+                rb.velocity = new Vector3(horizontal, vertical, 0.0f);
+            }
+        }
+        if (collision.collider.CompareTag("Player"))
+        {
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            if (!player.GetOnTreadMill())
+            {
+                player.SetOnTreadmill(true);
+                player.SetTreadmillVelocity(dir * speed);
+            }
+        }
+        if (collision.collider.CompareTag("Hand"))
+        {
+
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Player") ||
-            collision.collider.CompareTag("Hand") ||
-            collision.collider.CompareTag("Physical Object"))
+        if (collision.collider.CompareTag("Physical Object"))
         {
-            collision.gameObject.GetComponent<PhysicalObject>().ApplyInertia(dir, speed);
+            GameObject objectOffTreadmill = collision.gameObject;
+            PhysicalObject physicalObject = objectOffTreadmill.GetComponent<PhysicalObject>();
+            physicalObject.ApplyInertia(dir, speed);
+        }
+        if (collision.collider.CompareTag("Player"))
+        {
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            player.SetOnTreadmill(false);
+        }
+        if (collision.collider.CompareTag("Hand"))
+        { 
         }
     }
 }
