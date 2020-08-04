@@ -14,11 +14,13 @@ public class HandController : MonoBehaviour
     public float                moveSpeed;
     public float                checkRectX;
     public float                checkRectY;
+    public float                treadmillVelocity;
     private short               dir;
     private short               lastDir;
     private bool                isFireComplete;
     private bool                isControlling;
     private bool                isMovable;
+    private bool                isOnTreadmill;
 
     [Header("Retrieve Attributes")]
     private SpriteRenderer  sprite;
@@ -41,9 +43,11 @@ public class HandController : MonoBehaviour
         anim                = GetComponent<Animator>();
         dir                 = 1;
         lastDir             = 1;
+        treadmillVelocity   = 0f;
         isFireComplete      = false;
         isControlling       = false;
         isMovable           = true;
+        isOnTreadmill       = false;
 
         // Retreive Attributes
         sprite              = GetComponent<SpriteRenderer>();
@@ -148,31 +152,47 @@ public class HandController : MonoBehaviour
         cameraPosition.z = -100;
         cameraPosition.y += 7;
         mainCamera.transform.position = cameraPosition;
-        
+
         // Camera size setting
-        mainCamera.orthographicSize = 85 + 70 * cameraPosition.y / 73;
-        if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
-        if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
+        //mainCamera.orthographicSize = 85 + 70 * cameraPosition.y / 73;
+        //if (mainCamera.orthographicSize > 25) mainCamera.orthographicSize = 25; 
+        //if (mainCamera.orthographicSize < 13) mainCamera.orthographicSize = 14;
 
         // User input calculated
-        Vector2 movement = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime, 0);
+        float horizontal = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
 
-        if (movement.x > 0)
+        if (horizontal > 0)
         {
             dir     = 1;
             lastDir = 1;
         }
-        else if (movement.x < 0)
+        else if (horizontal < 0)
         {
             dir     = -1;
             lastDir = -1;
         }
-        else if (movement.x == 0)
+        else if (horizontal == 0)
         {
             dir     = 0;
         }
 
-        if (isMovable) rigidBody.transform.Translate(movement);
+        if (isMovable)
+        {
+            float vertical = rigidBody.velocity.y;
+
+            if (isOnTreadmill)
+            {
+                horizontal += treadmillVelocity * Time.deltaTime;
+                rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
+            }
+            else
+            {
+                if (horizontal != 0)
+                {
+                    rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
+                }
+            }
+        }
     }
 
     private void GroundCheck()
@@ -225,13 +245,28 @@ public class HandController : MonoBehaviour
         isMovable               = true;
     }
 
-    public bool getControlling() { return isControlling; }
 
-    public void setControlling(bool isControlling) { this.isControlling = isControlling; }
+    public void SetTreadmillVelocity(float treadmillVelocity)
+    { this.treadmillVelocity = treadmillVelocity; }
 
-    public void setMovable(bool isMovable) { this.isMovable = isMovable; }
+    public bool GetOnTreadMill()
+    { return isOnTreadmill; }
 
-    public bool getRetrieveComplete() { return isRetrieveComplete; }
+    public void SetOnTreadmill(bool isOnTreadmill)
+    { this.isOnTreadmill = isOnTreadmill; }
 
-    private void OnDrawGizmos() { Gizmos.DrawWireCube(transform.position, new Vector3(checkRectX, checkRectY, 0)); }
+    public bool getControlling() 
+    { return isControlling; }
+
+    public void setControlling(bool isControlling) 
+    { this.isControlling = isControlling; }
+
+    public void setMovable(bool isMovable) 
+    { this.isMovable = isMovable; }
+
+    public bool getRetrieveComplete() 
+    { return isRetrieveComplete; }
+
+    private void OnDrawGizmos() 
+    { Gizmos.DrawWireCube(transform.position, new Vector3(checkRectX, checkRectY, 0)); }
 }

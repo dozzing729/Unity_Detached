@@ -6,61 +6,61 @@ using UnityEngine;
 public class PlayerController : PhysicalObject
 {
     [Header("Movement Attributes")]
-    public Camera mainCamera;
+    public Camera       mainCamera;
     private Rigidbody2D rigidBody;
-    public float moveSpeed;
-    public float jumpHeight;
-    private float treadmillVelocity;
-    private bool isOnTreadmill;
-    private bool isGrounded;
-    private bool isMovable;
-    private bool isControlling;
+    public float        moveSpeed;
+    public float        jumpHeight;
+    private float       treadmillVelocity;
+    private bool        isOnTreadmill;
+    private bool        isGrounded;
+    private bool        isMovable;
+    private bool        isControlling;
 
     [Header("Shoot Attributes")]
-    public HandController firstHand;
-    public HandController secondHand;
-    public float powerLimit;
-    public float powerIncrement;
-    private float power;
-    private short arms;
-    private short enabledArms;
-    private bool isLeftRetrieving;
-    private bool isRightRetrieving;
+    public HandController   firstHand;
+    public HandController   secondHand;
+    public float            powerLimit;
+    public float            powerIncrement;
+    private float           power;
+    private short           arms;
+    private short           enabledArms;
+    private bool            isLeftRetrieving;
+    private bool            isRightRetrieving;
 
     [Header("Ground Check Attributes")]
-    public GameObject groundCheck;
-    public float groundCheckWidth;
+    public GameObject   groundCheck;
+    public float        groundCheckWidth;
 
     [Header("Animation Attributes")]
-    private Animator animator;
-    private short dir;
-    private short lastDir;
-    private enum State { idle, walk, jump, charge, fire };
-    private State state;
-    private bool isStateFixed;
+    private Animator    animator;
+    private short       dir;
+    private short       lastDir;
+    private enum        State { idle, walk, jump, charge, fire };
+    private State       state;
+    private bool        isStateFixed;
 
     private new void Start()
     {
         base.Start();
         // Movement attributes
-        rigidBody = GetComponent<Rigidbody2D>();
-        treadmillVelocity = 0;
-        isOnTreadmill = false;
-        isMovable = true;
-        isControlling = true;
+        rigidBody           = GetComponent<Rigidbody2D>();
+        treadmillVelocity   = 0;
+        isOnTreadmill       = false;
+        isMovable           = true;
+        isControlling       = true;
 
         // Shoot attributes
-        power = 0.0f;
-        arms = enabledArms;
-        isLeftRetrieving = false;
-        isRightRetrieving = false;
+        power               = 0.0f;
+        arms                = enabledArms;
+        isLeftRetrieving    = false;
+        isRightRetrieving   = false;
 
         // Animation attributes
-        animator = GetComponent<Animator>();
-        dir = 0;
-        lastDir = 1;
-        state = State.idle;
-        isStateFixed = false;
+        animator        = GetComponent<Animator>();
+        dir             = 0;
+        lastDir         = 1;
+        state           = State.idle;
+        isStateFixed    = false;
     }
 
     private new void Update()
@@ -149,7 +149,6 @@ public class PlayerController : PhysicalObject
                     rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
                 }
             }
-            Debug.Log(rigidBody.velocity);
         }
 
     }
@@ -160,9 +159,8 @@ public class PlayerController : PhysicalObject
         {
             if (Input.GetButtonDown("Jump"))
             {
-                //rigidBody.AddForce(new Vector2(0, jumpHeight), ForceMode2D.Impulse);
                 float horizontal = rigidBody.velocity.x * Time.deltaTime;
-                float vertical = (rigidBody.velocity.y + jumpHeight) * Time.deltaTime;
+                float vertical = rigidBody.velocity.y + jumpHeight;
                 rigidBody.velocity = new Vector3(horizontal, vertical, 0.0f);
             }
         }
@@ -259,7 +257,7 @@ public class PlayerController : PhysicalObject
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (arms == 1)
+            if (arms == 1 || (arms == 0 && enabledArms == 1))
             {
                 if (isControlling && !isLeftRetrieving)
                 {
@@ -387,7 +385,7 @@ public class PlayerController : PhysicalObject
     { this.isOnTreadmill = isOnTreadmill; }
 
     public void enableArms(short enabledArms)
-    { this.enabledArms = enabledArms; }
+    { this.enabledArms = arms = enabledArms; }
 
     public short getDir()
     { return lastDir; }
