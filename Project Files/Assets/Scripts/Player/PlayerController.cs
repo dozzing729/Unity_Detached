@@ -242,12 +242,12 @@ public class PlayerController : PhysicalObject
         // Check if retreiving is all done
         if (isLeftRetrieving)
         {
-            isLeftRetrieving = !firstHand.getRetrieveComplete();
+            isLeftRetrieving = !firstHand.GetRetrieveComplete();
             if (!isLeftRetrieving) arms++;
         }
         if (isRightRetrieving)
         {
-            isRightRetrieving = !secondHand.getRetrieveComplete();
+            isRightRetrieving = !secondHand.GetRetrieveComplete();
             if (!isRightRetrieving) arms++;
         }
 
@@ -257,17 +257,21 @@ public class PlayerController : PhysicalObject
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (arms == 1 || (arms == 0 && enabledArms == 1))
+            if ((arms == 1 && enabledArms == 2) ||
+                (arms == 0 && enabledArms == 1))
             {
-                if (isControlling && !isLeftRetrieving)
+                if (isControlling)
                 {
-                    isControlling = false;
-                    firstHand.setControlling(true);
+                    if (!isLeftRetrieving)
+                    {
+                        isControlling = false;
+                        firstHand.SetControl(true);
+                    }
                 }
-                else if (firstHand.getControlling())
+                else if (firstHand.GetControl())
                 {
                     isControlling = true;
-                    firstHand.setControlling(false);
+                    firstHand.SetControl(false);
                 }
             }
             else if (arms == 0)
@@ -275,17 +279,17 @@ public class PlayerController : PhysicalObject
                 if (isControlling && !(isLeftRetrieving || isRightRetrieving))
                 {
                     isControlling = false;
-                    firstHand.setControlling(true);
+                    firstHand.SetControl(true);
                 }
-                else if (firstHand.getControlling())
+                else if (firstHand.GetControl())
                 {
-                    firstHand.setControlling(false);
-                    secondHand.setControlling(true);
+                    firstHand.SetControl(false);
+                    secondHand.SetControl(true);
                 }
                 else
                 {
                     isControlling = true;
-                    secondHand.setControlling(false);
+                    secondHand.SetControl(false);
                 }
 
             }

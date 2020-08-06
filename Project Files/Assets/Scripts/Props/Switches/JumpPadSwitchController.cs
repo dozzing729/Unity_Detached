@@ -2,33 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorController : MonoBehaviour
+public class JumpPadSwitchController : MonoBehaviour
 {
-    public GameObject       unplugged_switch, plugged_green;
+    public GameObject       unplugged_switch, plugged_green, plugged_red;
     public GameObject       handCheck;
-    public GameObject       door;
     public HandController   leftHand, rightHand;
     public float            handCheckRectX, handCheckRectY;
     public int              waitToPlugOut;
     private int             counter;
     private bool            isLeftPlugged, isRightPlugged;
     private bool            isLeftHandAround, isRightHandAround;
+    private bool            isActivated;
     private bool            isPlugOutEnabled;
 
     void Start()
     {
         isLeftHandAround    = false;
         isRightHandAround   = false;
+        isActivated         = false;
         isPlugOutEnabled    = false;
-        counter             = waitToPlugOut;
+        counter             = 0;
         plugged_green   .SetActive(false);
+        plugged_red     .SetActive(false);
     }
 
     void Update()
     {
         HandCheck();
         ActivateSwitch();
-        SpriteControl();   
+        SpriteControl();
     }
 
     private void HandCheck()
@@ -37,42 +39,59 @@ public class DoorController : MonoBehaviour
         isRightHandAround = Physics2D.OverlapBox(handCheck.transform.position, new Vector2(handCheckRectX, handCheckRectY), 0.0f, LayerMask.GetMask("Right Hand"));
     }
 
-    private void ActivateSwitch() {
+    private void ActivateSwitch()
+    {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            // Plugging into switch
-            if (isLeftHandAround && !isLeftPlugged && leftHand.getControlling())
+            // If this switch is plugged in by eiher right or left
+            if (isLeftPlugged || isRightPlugged)
             {
-                isLeftPlugged = true;
-                leftHand.SetStateAfterPlugIn();
-                door.SetActive(false);
-                return;
+                // Activating switch
+                if (!isActivated)
+                {
+                    // Activate only when the plugged hand is being controlled
+                    if ((isLeftPlugged    &&  leftHand.GetControl()) ||
+                        (isRightPlugged   &&  rightHand.GetControl()))
+                    {
+                        isActivated = true;
+                        Invoke("Deactivate", 0.5f);
+                    }
+                }
             }
-            if (isRightHandAround && !isRightPlugged && rightHand.getControlling())
+            else
             {
-                isRightPlugged = true;
-                rightHand.SetStateAfterPlugIn();
-                door.SetActive(false);
-                return;
+                // Plugging into switch
+                if (isLeftHandAround && !isLeftPlugged && leftHand.GetControl())
+                {
+                    isLeftPlugged = true;
+                    leftHand.OnPlugIn();
+                    return;
+                }
+                if (isRightHandAround && !isRightPlugged && rightHand.GetControl())
+                {
+                    isRightPlugged = true;
+                    rightHand.OnPlugIn();
+                    return;
+                }
             }
         }
         if (Input.GetKey(KeyCode.Q) && isPlugOutEnabled)
         {
-            if (isLeftPlugged && leftHand.getControlling())
+            if (isLeftPlugged && leftHand.GetControl())
             {
                 if (counter++ > waitToPlugOut)
                 {
                     isLeftPlugged = false;
-                    leftHand.SetStateAfterPlugOut();
+                    leftHand.OnPlugOut();
                     isPlugOutEnabled = false;
                 }
             }
-            if (isRightPlugged && rightHand.getControlling())
+            if (isRightPlugged && rightHand.GetControl())
             {
                 if (counter++ > waitToPlugOut)
                 {
                     isRightPlugged = false;
-                    rightHand.SetStateAfterPlugOut();
+                    rightHand.OnPlugOut();
                     isPlugOutEnabled = false;
                 }
             }
@@ -80,12 +99,15 @@ public class DoorController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Q))
         {
             counter = 0;
-            if ((isLeftPlugged && leftHand.getControlling()) || (isRightPlugged && rightHand.getControlling()))
+            if((isLeftPlugged && leftHand.GetControl()) || (isRightPlugged && rightHand.GetControl()))
             {
                 isPlugOutEnabled = true;
             }
         }
     }
+
+    // Swtich comes back to deactivated state, 0.5 seconds after it is activated
+    private void Deactivate() { isActivated = false; }
 
     private void SpriteControl()
     {
@@ -97,20 +119,31 @@ public class DoorController : MonoBehaviour
         {
             isRightPlugged = false;
         }
-        
+
         if (isLeftPlugged || isRightPlugged)
         {
-            plugged_green.SetActive(true);
-            unplugged_switch.SetActive(false);
-            door.SetActive(false);
+            if (isActivated)
+            {
+                plugged_red.SetActive(false);
+                plugged_green.SetActive(true);
+                unplugged_switch.SetActive(false);
+            }
+            else
+            {
+                plugged_red.SetActive(true);
+                plugged_green.SetActive(false);
+                unplugged_switch.SetActive(false);
+            }
         }
         else
         {
+            plugged_red.SetActive(false);
             plugged_green.SetActive(false);
             unplugged_switch.SetActive(true);
-            door.SetActive(true);
         }
     }
+
+    public bool getActivated() { return isActivated; }
 
     public bool getLeftPlugged() { return isLeftPlugged; }
 

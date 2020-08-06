@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 9166269583827860141}
   - component: {fileID: 9166269583827860142}
   - component: {fileID: 9166269583827860137}
+  - component: {fileID: 5976545343710515403}
+  - component: {fileID: 7057181189723253371}
   - component: {fileID: 9166269583827860136}
   - component: {fileID: 9166269583827860143}
   m_Layer: 11
@@ -117,7 +119,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.082502365, y: 0.59861135}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -128,8 +130,40 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.4180546, y: 4.8676195}
+  m_Size: {x: 5.8, y: 4}
   m_EdgeRadius: 0
+--- !u!58 &5976545343710515403
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166269583827860130}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -2.9, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
+--- !u!58 &7057181189723253371
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166269583827860130}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 2.9, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
 --- !u!95 &9166269583827860136
 Animator:
   serializedVersion: 3
@@ -161,7 +195,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c08822e9ab37d45894b5bd8e8f952c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  normalSprite: {fileID: 9166269583827860130}
+  destroyedSprite: {fileID: 0}
+  rigidbody: {fileID: 9166269583827860142}
+  transform: {fileID: 9166269583827860140}
+  player: {fileID: 4200882710565440542, guid: 7de4a1535c057234c8018f9a2bfd536a, type: 3}
   mainCamera: {fileID: 0}
   retrieveSpeed: 60
   moveSpeed: 800

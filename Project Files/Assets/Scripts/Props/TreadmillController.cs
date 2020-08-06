@@ -33,7 +33,12 @@ public class TreadmillController : MonoBehaviour
         }
         if (collision.collider.CompareTag("Hand"))
         {
-
+            HandController hand = collision.gameObject.GetComponent<HandController>();
+            if (!hand.GetOnTreadMill())
+            {
+                hand.SetOnTreadmill(true);
+                hand.SetTreadmillVelocity(dir * speed);
+            }
         }
     }
 

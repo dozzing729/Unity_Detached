@@ -8,8 +8,8 @@ public class PhysicalObject : MonoBehaviour
     private Boolean isDestroyed;
     public GameObject normalSprite;
     public GameObject destroyedSprite;
-    private new Rigidbody2D rigidbody;
-    private new Transform transform;
+    public new Rigidbody2D rigidbody;
+    public new Transform transform;
     
     protected void Start()
     {

@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 8597598662017446268}
   - component: {fileID: 8597598662017446271}
   - component: {fileID: 8597598662017447554}
-  - component: {fileID: 8597598662017447555}
+  - component: {fileID: 4394455494924540501}
+  - component: {fileID: 3555333380393815831}
+  - component: {fileID: 8172214140647008051}
   - component: {fileID: 8597598662017447552}
   - component: {fileID: 8597598662017446269}
   m_Layer: 12
@@ -99,12 +101,12 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 6
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &8597598662017447555
+--- !u!61 &4394455494924540501
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,7 +119,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.082408905, y: 0.342062}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -128,8 +130,40 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.0876827, y: 4.6965847}
+  m_Size: {x: 5.8, y: 4}
   m_EdgeRadius: 0
+--- !u!58 &3555333380393815831
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597598662017446270}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -2.9, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
+--- !u!58 &8172214140647008051
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597598662017446270}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 2.9, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
 --- !u!95 &8597598662017447552
 Animator:
   serializedVersion: 3
@@ -161,7 +195,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c08822e9ab37d45894b5bd8e8f952c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  normalSprite: {fileID: 8597598662017446270}
+  destroyedSprite: {fileID: 0}
+  rigidbody: {fileID: 8597598662017447554}
+  transform: {fileID: 8597598662017446268}
+  player: {fileID: 4200882710565440542, guid: 7de4a1535c057234c8018f9a2bfd536a, type: 3}
   mainCamera: {fileID: 0}
   retrieveSpeed: 800
   moveSpeed: 10
