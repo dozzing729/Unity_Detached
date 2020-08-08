@@ -374,10 +374,24 @@ public class PlayerController : PhysicalObject
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f));
+        if (collision.collider.tag == "Platform")
+        {
+            this.transform.parent = collision.transform;
+        }
     }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.tag == "Platform")
+        {
+            this.transform.parent = null;
+        }
+    }
+
+    private void OnDrawGizmos()
+    { Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f)); }
 
     public void SetTreadmillVelocity(float treadmillVelocity)
     { this.treadmillVelocity = treadmillVelocity; }

@@ -204,7 +204,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -7.1}
   serializedVersion: 2
-  m_Radius: 3.82
+  m_Radius: 3.85
 --- !u!50 &4200882710565440737
 Rigidbody2D:
   serializedVersion: 4
@@ -259,6 +259,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalSprite: {fileID: 4200882710565440542}
   destroyedSprite: {fileID: 1801738212}
+  rigidbody: {fileID: 0}
+  transform: {fileID: 0}
   mainCamera: {fileID: 0}
   moveSpeed: 800
   jumpHeight: 25
@@ -267,4 +269,4 @@ MonoBehaviour:
   powerLimit: 20
   powerIncrement: 0.15
   groundCheck: {fileID: 4200882710150230876}
-  groundCheckWidth: 0.69
+  groundCheckWidth: 0.7

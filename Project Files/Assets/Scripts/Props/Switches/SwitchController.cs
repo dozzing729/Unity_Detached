@@ -70,9 +70,9 @@ public class SwitchController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && player.getControlling())
         {
             OnDeactivation();
-            isLeftHandAround = false;
-            isRightHandAround = false;
-            isPlugOutEnabled = true;
+            isLeftHandAround    = false;
+            isRightHandAround   = false;
+            isPlugOutEnabled    = true;
         }
         // Plug out
         if (Input.GetKeyUp(KeyCode.Q))

@@ -5,17 +5,20 @@ using UnityEngine;
 public class LiftSwitchController : SwitchController
 {
     public GameObject   maxHeightCheck;
+    public GameObject   minHeightCheck;
     private Vector3     targetPosition;
     public float        speed;
-    private float       maxHeight;
-    private float       minHeight;
+    public float        maxHeight;
+    public float        minHeight;
 
     protected override void Start()
     {
         base.Start();
         targetPosition  = target.transform.position;
-        maxHeight       = maxHeightCheck.transform.localPosition.y;
-        minHeight       = targetPosition.y;
+        maxHeight       = maxHeightCheck.transform.position.y;
+        minHeight       = minHeightCheck.transform.position.y;
+        maxHeightCheck.transform.parent = null;
+        minHeightCheck.transform.parent = null;
     }
 
     protected override void Update()
@@ -30,10 +33,10 @@ public class LiftSwitchController : SwitchController
         if (isLeftPlugged || isRightPlugged)
         {
             MoveUp();
+            Debug.Log("target: " + targetPosition.y);
         }
         else
         {
-            Debug.Log("GO DOWN");
             MoveDown();
         }
     }
@@ -50,7 +53,6 @@ public class LiftSwitchController : SwitchController
     {
         if (targetPosition.y >= minHeight)
         {
-            Debug.Log("GOING DOWN");
             Move(-2);
         }
     }
@@ -62,6 +64,8 @@ public class LiftSwitchController : SwitchController
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(maxHeightCheck.transform.position, 1f);
+        Gizmos.DrawLine(
+            new Vector3(minHeightCheck.transform.position.x, minHeightCheck.transform.position.y, 0.0f), 
+            new Vector3(maxHeightCheck.transform.position.x, maxHeightCheck.transform.position.y, 0.0f));
     }
 }
