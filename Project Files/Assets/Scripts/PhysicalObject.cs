@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class PhysicalObject : MonoBehaviour
 {
-    private Boolean isDestroyed;
-    public GameObject normalSprite;
-    public GameObject destroyedSprite;
-    public new Rigidbody2D rigidbody;
-    public new Transform transform;
+    private Boolean         isDestroyed;
+    public GameObject       normalSprite;
+    public GameObject       destroyedSprite;
+    public new Rigidbody2D  rigidbody;
+    public new Transform    transform;
     
     protected void Start()
     {
         isDestroyed = false;
         rigidbody   = GetComponent<Rigidbody2D>();
         transform   = GetComponent<Transform>();
-        normalSprite.SetActive(true);
-        destroyedSprite.SetActive(false);
+        normalSprite    .SetActive(true);
+        destroyedSprite .SetActive(false);
     }
 
     protected void Update()
@@ -55,6 +55,4 @@ public class PhysicalObject : MonoBehaviour
 
     public Boolean GetDestroyed() { return isDestroyed; }
     public void SetDestroyed(Boolean isDestroyed) { this.isDestroyed = isDestroyed; }
-    public Rigidbody2D GetRigidbody() { return rigidbody; }
-    public Transform GetTransform() { return transform; }
 }

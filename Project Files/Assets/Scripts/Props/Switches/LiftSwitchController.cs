@@ -21,11 +21,11 @@ public class LiftSwitchController : SwitchController
         minHeightCheck.transform.parent = null;
     }
 
-    protected override void Update()
+    private void FixedUpdate()
     {
-        base.Update();
         Operate();
     }
+
     private void Operate()
     {
         targetPosition = target.transform.position;
@@ -33,7 +33,6 @@ public class LiftSwitchController : SwitchController
         if (isLeftPlugged || isRightPlugged)
         {
             MoveUp();
-            Debug.Log("target: " + targetPosition.y);
         }
         else
         {
@@ -67,5 +66,7 @@ public class LiftSwitchController : SwitchController
         Gizmos.DrawLine(
             new Vector3(minHeightCheck.transform.position.x, minHeightCheck.transform.position.y, 0.0f), 
             new Vector3(maxHeightCheck.transform.position.x, maxHeightCheck.transform.position.y, 0.0f));
+        Gizmos.DrawWireSphere(minHeightCheck.transform.position, 1.0f);
+        Gizmos.DrawWireSphere(maxHeightCheck.transform.position, 1.0f);
     }
 }

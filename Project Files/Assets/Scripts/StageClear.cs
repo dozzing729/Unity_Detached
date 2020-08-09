@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 public class StageClear : MonoBehaviour
 {
     public PlayerController player;
-    public HandController   leftHand;
-    public HandController   rightHand;
+    public ArmController   leftHand;
+    public ArmController   rightHand;
     public float            detectionRadius;
     public int              stage;
     public bool             isLastStage;
@@ -42,24 +42,24 @@ public class StageClear : MonoBehaviour
 
     private void RetrieveHands() 
     {
-        switch (player.getArms())
+        switch (player.GetArms())
                 {
                     case 1:
-                        if (!player.getLeftRetrieving())
+                        if (!player.GetLeftRetrieving())
                         {
-                            player.setLeftRetrieving(true);
+                            player.SetLeftRetrieving(true);
                             leftHand.StartRetrieve();
                         }
                         break;
                     case 0:
-                        if (!player.getLeftRetrieving())
+                        if (!player.GetLeftRetrieving())
                         {
-                            player.setLeftRetrieving(true);
+                            player.SetLeftRetrieving(true);
                             leftHand.StartRetrieve();
                         }
-                        if (!player.getRightRetrieving())
+                        if (!player.GetRightRetrieving())
                         {
-                            player.setRightRetrieving(true);
+                            player.SetRightRetrieving(true);
                             rightHand.StartRetrieve();
                         }
                         break;

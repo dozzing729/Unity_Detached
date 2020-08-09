@@ -6,7 +6,7 @@ public class JumpPadSwitchController : MonoBehaviour
 {
     public GameObject       unplugged_switch, plugged_green, plugged_red;
     public GameObject       handCheck;
-    public HandController   leftHand, rightHand;
+    public ArmController   leftHand, rightHand;
     public float            handCheckRectX, handCheckRectY;
     public int              waitToPlugOut;
     private int             counter;

@@ -6,11 +6,11 @@ public class SwitchController : MonoBehaviour
 {
     public GameObject       target;
     public GameObject       unpluggedSprite, pluggedSpriteRed, pluggedSpriteGreen;
-    public HandController   leftHand, rightHand;
+    public ArmController    leftArm, rightArm;
     public PlayerController player;
     public int              waitToPlugOut;
     protected int           counter;
-    protected bool          isLeftHandAround, isRightHandAround;
+    protected bool          isLeftArmAround, isRightArmAround;
     protected bool          isLeftPlugged, isRightPlugged;
     protected bool          isPlugOutEnabled;
 
@@ -35,13 +35,9 @@ public class SwitchController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             // Left hand ready to plug in
-            if (isLeftHandAround && leftHand.GetControl())
-            {
-                OnActivation();
-                return;
-            }
             // Right hand ready to plug out
-            if (isRightHandAround && rightHand.GetControl())
+            if (isLeftArmAround && leftArm.GetControl() ||
+                isRightArmAround && rightArm.GetControl())
             {
                 OnActivation();
                 return;
@@ -51,7 +47,7 @@ public class SwitchController : MonoBehaviour
         if (Input.GetKey(KeyCode.Q) && isPlugOutEnabled)
         {
             // If left hand must come out
-            if (isLeftPlugged && leftHand.GetControl())
+            if (isLeftPlugged && leftArm.GetControl())
             {
                 if (counter++ > waitToPlugOut)
                 {
@@ -59,7 +55,7 @@ public class SwitchController : MonoBehaviour
                 }
             }
             // If right hand must come out
-            if (isRightPlugged && rightHand.GetControl())
+            if (isRightPlugged && rightArm.GetControl())
             {
                 if (counter++ > waitToPlugOut)
                 {
@@ -67,19 +63,19 @@ public class SwitchController : MonoBehaviour
                 }
             }           
         }
-        if (Input.GetKeyDown(KeyCode.R) && player.getControlling())
+        if (Input.GetKeyDown(KeyCode.R) && player.GetControlling())
         {
             OnDeactivation();
-            isLeftHandAround    = false;
-            isRightHandAround   = false;
+            isLeftArmAround    = false;
+            isRightArmAround   = false;
             isPlugOutEnabled    = true;
         }
         // Plug out
         if (Input.GetKeyUp(KeyCode.Q))
         {
             counter = 0;
-            if ((isLeftPlugged && leftHand.GetControl()) || 
-                (isRightPlugged && rightHand.GetControl()))
+            if ((isLeftPlugged && leftArm.GetControl()) || 
+                (isRightPlugged && rightArm.GetControl()))
             {
                 isPlugOutEnabled = true;
             }
@@ -87,16 +83,16 @@ public class SwitchController : MonoBehaviour
     }
 
     virtual protected void OnActivation() {
-        if (isLeftHandAround)
+        if (isLeftArmAround)
         {
             isLeftPlugged = true;
-            leftHand.OnPlugIn();
+            leftArm.OnPlugIn();
             return;
         }
-        if (isRightHandAround)
+        if (isRightArmAround)
         {
             isRightPlugged = true;
-            rightHand.OnPlugIn();
+            rightArm.OnPlugIn();
             return;
         }
     }
@@ -108,14 +104,14 @@ public class SwitchController : MonoBehaviour
         {
             isLeftPlugged       = false;
             isPlugOutEnabled    = false;
-            leftHand.OnPlugOut();
+            leftArm.OnPlugOut();
             return;
         }
         if (isRightPlugged)
         {
             isRightPlugged      = false;
             isPlugOutEnabled    = false;
-            rightHand.OnPlugOut();
+            rightArm.OnPlugOut();
             return;
         }
     }
@@ -141,11 +137,11 @@ public class SwitchController : MonoBehaviour
             // 11: Left Hand, 12: Right Hand
             if (collision.gameObject.layer == 11)
             {
-                isLeftHandAround = true;
+                isLeftArmAround = true;
             }
             if (collision.gameObject.layer == 12)
             {
-                isRightHandAround = true;
+                isRightArmAround = true;
             }
         }
     }
@@ -158,12 +154,12 @@ public class SwitchController : MonoBehaviour
             if (collision.gameObject.layer == 11)
             {
                 OnDeactivation();
-                isLeftHandAround = false;
+                isLeftArmAround = false;
             }
             if (collision.gameObject.layer == 12)
             {
                 OnDeactivation();
-                isRightHandAround = false;
+                isRightArmAround = false;
             }
         }
     }

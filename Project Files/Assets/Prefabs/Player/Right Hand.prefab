@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 8597598662017446268}
   - component: {fileID: 8597598662017446271}
   - component: {fileID: 8597598662017447554}
-  - component: {fileID: 4394455494924540501}
   - component: {fileID: 3555333380393815831}
   - component: {fileID: 8172214140647008051}
+  - component: {fileID: 373456094997058119}
   - component: {fileID: 8597598662017447552}
-  - component: {fileID: 8597598662017446269}
+  - component: {fileID: 114884351404355660}
   m_Layer: 12
   m_Name: Right Hand
   m_TagString: Hand
@@ -101,37 +101,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 6
-  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
+  m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &4394455494924540501
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8597598662017446270}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 12.3, y: 6.92}
-    newSize: {x: 12.3, y: 6.92}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 5.8, y: 4}
-  m_EdgeRadius: 0
 --- !u!58 &3555333380393815831
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -145,9 +119,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -2.9, y: 0}
+  m_Offset: {x: -2.5, y: 0}
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 1.9
 --- !u!58 &8172214140647008051
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -161,9 +135,25 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 2.9, y: 0}
+  m_Offset: {x: 2.5, y: 0}
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 1.9
+--- !u!70 &373456094997058119
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597598662017446270}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 7.85, y: 4.06}
+  m_Direction: 1
 --- !u!95 &8597598662017447552
 Animator:
   serializedVersion: 3
@@ -183,7 +173,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8597598662017446269
+--- !u!114 &114884351404355660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,7 +182,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8597598662017446270}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0c08822e9ab37d45894b5bd8e8f952c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a692db4ff2a1f441b5b10ec679c236c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   normalSprite: {fileID: 8597598662017446270}
@@ -201,9 +191,12 @@ MonoBehaviour:
   transform: {fileID: 8597598662017446268}
   player: {fileID: 4200882710565440542, guid: 7de4a1535c057234c8018f9a2bfd536a, type: 3}
   mainCamera: {fileID: 0}
-  retrieveSpeed: 800
-  moveSpeed: 10
+  retrieveSpeed: 100
+  moveSpeed: 800
   checkRectX: 2.58
   checkRectY: 1.3
   treadmillVelocity: 0
+  capsuleCollider: {fileID: 373456094997058119}
+  circleCollider_1: {fileID: 3555333380393815831}
+  circleCollider_2: {fileID: 8172214140647008051}
   retreiveRadius: 3

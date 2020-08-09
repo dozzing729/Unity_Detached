@@ -33,7 +33,7 @@ public class TreadmillController : MonoBehaviour
         }
         if (collision.collider.CompareTag("Hand"))
         {
-            HandController hand = collision.gameObject.GetComponent<HandController>();
+            ArmController hand = collision.gameObject.GetComponent<ArmController>();
             if (!hand.GetOnTreadMill())
             {
                 hand.SetOnTreadmill(true);
@@ -57,7 +57,7 @@ public class TreadmillController : MonoBehaviour
         }
         if (collision.collider.CompareTag("Hand"))
         {
-            HandController hand = collision.gameObject.GetComponent<HandController>();
+            ArmController hand = collision.gameObject.GetComponent<ArmController>();
             hand.SetOnTreadmill(false);
         }
     }

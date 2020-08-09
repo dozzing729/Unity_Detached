@@ -11,7 +11,7 @@ public class ArmEnabler : MonoBehaviour
         if (collision.collider.tag == "Player")
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            player.enableArms(arms);
+            player.EnableArms(arms);
             gameObject.SetActive(false);
         }
     }

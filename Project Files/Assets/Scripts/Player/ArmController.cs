@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.VersionControl;
 using UnityEngine;
 
-public class HandController : PhysicalObject
+public class ArmController : PhysicalObject
 {
     [Header("Movement Attributes")]
     public GameObject           player;
@@ -23,14 +23,15 @@ public class HandController : PhysicalObject
     private bool                isOnTreadmill;
 
     [Header("Retrieve Attributes")]
-    private SpriteRenderer  sprite;
-    private BoxCollider2D   boxCollider;
-    private Vector2         playerPosition;
-    public float            retreiveRadius;
-    private float           gravityScale;
-    private float           mass;
-    private bool            isRetrieving;
-    private bool            isRetrieveComplete;
+    private SpriteRenderer      sprite;
+    public CapsuleCollider2D    capsuleCollider;
+    public CircleCollider2D     circleCollider_1, circleCollider_2;
+    private Vector2             playerPosition;
+    public float                retreiveRadius;
+    private float               gravityScale;
+    private float               mass;
+    private bool                isRetrieving;
+    private bool                isRetrieveComplete;
 
     private new void Start()
     {
@@ -50,7 +51,6 @@ public class HandController : PhysicalObject
 
         // Retreive Attributes
         sprite              = GetComponent<SpriteRenderer>();
-        boxCollider         = GetComponent<BoxCollider2D>();
         playerPosition      = player.transform.position;
         gravityScale        = rigidbody.gravityScale;
         mass                = rigidbody.mass;
@@ -82,7 +82,7 @@ public class HandController : PhysicalObject
 
         // Fire vector is calculated.
         // Initial position is set to a little front of the player.
-        switch (playerController.getDir())
+        switch (playerController.GetDir())
         {
             case 1:
                 playerPosition.x                += 2;
@@ -103,12 +103,14 @@ public class HandController : PhysicalObject
     public void StartRetrieve()
     {
         // Trigger 'Retrieve()'. Properties are changed so that the hand can move freely.
-        sprite.enabled          = true;
-        boxCollider.isTrigger   = true;
-        rigidbody.gravityScale  = 0f;
-        rigidbody.mass          = 0f;
-        isMovable               = false;
-        isRetrieving            = true;
+        sprite.enabled              = true;
+        capsuleCollider.isTrigger   = true;
+        circleCollider_1.isTrigger  = true;
+        circleCollider_2.isTrigger  = true;
+        rigidbody.gravityScale      = 0f;
+        rigidbody.mass              = 0f;
+        isMovable                   = false;
+        isRetrieving                = true;
     }
 
     private void Retrieve()
@@ -129,13 +131,15 @@ public class HandController : PhysicalObject
             // Retrieve complete
             if (diff.magnitude < retreiveRadius)
             {
-                rigidbody           .gravityScale = gravityScale;
-                rigidbody           .mass = mass;
-                boxCollider         .isTrigger = false;
-                gameObject          .SetActive(false);
-                isFireComplete      = false;
-                isRetrieving        = false;
-                isRetrieveComplete  = true;
+                rigidbody.gravityScale      = gravityScale;
+                rigidbody.mass              = mass;
+                capsuleCollider.isTrigger   = false;
+                circleCollider_1.isTrigger  = false;
+                circleCollider_2.isTrigger  = false;
+                isFireComplete              = false;
+                isRetrieving                = false;
+                isRetrieveComplete          = true;
+                gameObject.SetActive(false);
             }
         }
     }
@@ -235,21 +239,25 @@ public class HandController : PhysicalObject
 
     public void OnPlugIn()
     {
-        sprite.enabled          = false;
-        boxCollider.isTrigger   = true;
-        rigidbody.gravityScale  = 0f;
-        rigidbody.mass          = 0f;
-        isMovable               = false;
-        rigidbody.velocity      = Vector2.zero;
+        sprite.enabled              = false;
+        capsuleCollider.isTrigger   = true;
+        circleCollider_1.isTrigger  = true;
+        circleCollider_2.isTrigger  = true;
+        rigidbody.gravityScale      = 0f;
+        rigidbody.mass              = 0f;
+        isMovable                   = false;
+        rigidbody.velocity          = Vector2.zero;
     }
 
     public void OnPlugOut()
     {
-        sprite.enabled          = true;
-        boxCollider.isTrigger   = false;
-        rigidbody.gravityScale  = gravityScale;
-        rigidbody.mass          = mass;
-        isMovable               = true;
+        sprite.enabled              = true;
+        capsuleCollider.isTrigger   = false;
+        circleCollider_1.isTrigger  = false;
+        circleCollider_2.isTrigger  = false;
+        rigidbody.gravityScale      = gravityScale;
+        rigidbody.mass              = mass;
+        isMovable                   = true;
     }
 
 

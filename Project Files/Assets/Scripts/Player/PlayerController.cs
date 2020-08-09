@@ -17,8 +17,8 @@ public class PlayerController : PhysicalObject
     private bool        isControlling;
 
     [Header("Shoot Attributes")]
-    public HandController   firstHand;
-    public HandController   secondHand;
+    public ArmController    firstArm;
+    public ArmController    secondArm;
     public float            powerLimit;
     public float            powerIncrement;
     private float           power;
@@ -67,6 +67,9 @@ public class PlayerController : PhysicalObject
     {
         base.Update();
         GroundCheck();
+        ChangeControl();
+        AnimationControl();
+
         if (isControlling)
         {
             Jump();
@@ -74,8 +77,6 @@ public class PlayerController : PhysicalObject
             Shoot();
             Retrieve();
         }
-        ChangeControl();
-        AnimationControl();
     }
 
     private void GroundCheck()
@@ -193,17 +194,17 @@ public class PlayerController : PhysicalObject
                 // Call HandController class's function to actually fire
                 if (arms == 2)
                 {
-                    firstHand.Fire(power);
+                    firstArm.Fire(power);
                 }
                 if (arms == 1)
                 {
                     if (enabledArms == 1)
                     {
-                        firstHand.Fire(power);
+                        firstArm.Fire(power);
                     }
                     else
                     {
-                        secondHand.Fire(power);
+                        secondArm.Fire(power);
                     }
                 }
                 power = 0.0f;
@@ -214,9 +215,9 @@ public class PlayerController : PhysicalObject
     private void MakeShoot()
     {
         // Once firing is done, player is able to move, change state and an arm is reduced.
-        isMovable = true;
-        isStateFixed = false;
-        state = State.idle;
+        isMovable       = true;
+        isStateFixed    = false;
+        state           = State.idle;
         arms--;
     }
 
@@ -228,26 +229,26 @@ public class PlayerController : PhysicalObject
             if (arms == enabledArms - 1 && enabledArms != 0)
             {
                 isLeftRetrieving = true;
-                firstHand.StartRetrieve();
+                firstArm.StartRetrieve();
             }
             else if (arms == enabledArms - 2 && enabledArms == 2)
             {
                 isLeftRetrieving = true;
                 isRightRetrieving = true;
-                firstHand.StartRetrieve();
-                secondHand.StartRetrieve();
+                firstArm.StartRetrieve();
+                secondArm.StartRetrieve();
             }
         }
 
         // Check if retreiving is all done
         if (isLeftRetrieving)
         {
-            isLeftRetrieving = !firstHand.GetRetrieveComplete();
+            isLeftRetrieving = !firstArm.GetRetrieveComplete();
             if (!isLeftRetrieving) arms++;
         }
         if (isRightRetrieving)
         {
-            isRightRetrieving = !secondHand.GetRetrieveComplete();
+            isRightRetrieving = !secondArm.GetRetrieveComplete();
             if (!isRightRetrieving) arms++;
         }
 
@@ -265,31 +266,34 @@ public class PlayerController : PhysicalObject
                     if (!isLeftRetrieving)
                     {
                         isControlling = false;
-                        firstHand.SetControl(true);
+                        firstArm.SetControl(true);
                     }
                 }
-                else if (firstHand.GetControl())
+                else if (firstArm.GetControl())
                 {
                     isControlling = true;
-                    firstHand.SetControl(false);
+                    firstArm.SetControl(false);
                 }
             }
             else if (arms == 0)
             {
-                if (isControlling && !(isLeftRetrieving || isRightRetrieving))
+                if (isControlling)
                 {
-                    isControlling = false;
-                    firstHand.SetControl(true);
+                    if (!isLeftRetrieving)
+                    {
+                        isControlling = false;
+                        firstArm.SetControl(true);
+                    }
                 }
-                else if (firstHand.GetControl())
+                else if (firstArm.GetControl())
                 {
-                    firstHand.SetControl(false);
-                    secondHand.SetControl(true);
+                    firstArm.SetControl(false);
+                    secondArm.SetControl(true);
                 }
                 else
                 {
                     isControlling = true;
-                    secondHand.SetControl(false);
+                    secondArm.SetControl(false);
                 }
 
             }
@@ -376,7 +380,7 @@ public class PlayerController : PhysicalObject
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.tag == "Platform")
+        if (collision.collider.CompareTag("Platform"))
         {
             this.transform.parent = collision.transform;
         }
@@ -384,7 +388,7 @@ public class PlayerController : PhysicalObject
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.tag == "Platform")
+        if (collision.collider.CompareTag("Platform"))
         {
             this.transform.parent = null;
         }
@@ -402,30 +406,30 @@ public class PlayerController : PhysicalObject
     public void SetOnTreadmill(bool isOnTreadmill)
     { this.isOnTreadmill = isOnTreadmill; }
 
-    public void enableArms(short enabledArms)
+    public void EnableArms(short enabledArms)
     { this.enabledArms = arms = enabledArms; }
 
-    public short getDir()
+    public short GetDir()
     { return lastDir; }
 
-    public bool getControlling()
+    public bool GetControlling()
     { return isControlling; }
 
-    public void setControlling(bool input)
+    public void SetControlling(bool input)
     { isControlling = input; }
 
-    public bool getLeftRetrieving()
+    public bool GetLeftRetrieving()
     { return isLeftRetrieving; }
 
-    public bool getRightRetrieving()
+    public bool GetRightRetrieving()
     { return isRightRetrieving; }
 
-    public void setLeftRetrieving(bool input)
+    public void SetLeftRetrieving(bool input)
     { isLeftRetrieving = input; }
 
-    public void setRightRetrieving(bool input)
+    public void SetRightRetrieving(bool input)
     { isRightRetrieving = input; }
 
-    public short getArms()
+    public short GetArms()
     { return arms; }
 }

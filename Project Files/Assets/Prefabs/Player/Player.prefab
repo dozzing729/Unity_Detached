@@ -70,9 +70,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4200882710565440738}
   - component: {fileID: 4200882710565440739}
-  - component: {fileID: 6504082903407751056}
-  - component: {fileID: 4200882710565440736}
-  - component: {fileID: 6899129987686215980}
+  - component: {fileID: 6166999275398651056}
+  - component: {fileID: 2308420851045854145}
   - component: {fileID: 4200882710565440737}
   - component: {fileID: 4200882710565440740}
   - component: {fileID: 4200882710565440741}
@@ -147,8 +146,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &6504082903407751056
-CircleCollider2D:
+--- !u!70 &6166999275398651056
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -160,36 +159,10 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 6.77}
-  serializedVersion: 2
-  m_Radius: 3.85
---- !u!61 &4200882710565440736
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4200882710565440542}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 55256bddb15bc5b4c927667d4177347a, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.18581438}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 35.079998, y: 24.8}
-    newSize: {x: 35.079998, y: 24.8}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 7.7, y: 13.883019}
-  m_EdgeRadius: 0
---- !u!58 &6899129987686215980
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 7.7, y: 20.86}
+  m_Direction: 0
+--- !u!58 &2308420851045854145
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,9 +175,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -7.1}
+  m_Offset: {x: 0, y: -7.28}
   serializedVersion: 2
-  m_Radius: 3.85
+  m_Radius: 3.6
 --- !u!50 &4200882710565440737
 Rigidbody2D:
   serializedVersion: 4
@@ -259,14 +232,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalSprite: {fileID: 4200882710565440542}
   destroyedSprite: {fileID: 1801738212}
-  rigidbody: {fileID: 0}
-  transform: {fileID: 0}
+  rigidbody: {fileID: 4200882710565440737}
+  transform: {fileID: 4200882710565440738}
   mainCamera: {fileID: 0}
   moveSpeed: 800
   jumpHeight: 25
-  firstHand: {fileID: 0}
-  secondHand: {fileID: 0}
+  firstArm: {fileID: 0}
+  secondArm: {fileID: 0}
   powerLimit: 20
   powerIncrement: 0.15
   groundCheck: {fileID: 4200882710150230876}
-  groundCheckWidth: 0.7
+  groundCheckWidth: 0.61
