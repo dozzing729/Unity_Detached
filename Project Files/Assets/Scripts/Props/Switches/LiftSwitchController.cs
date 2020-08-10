@@ -8,8 +8,8 @@ public class LiftSwitchController : SwitchController
     public GameObject   minHeightCheck;
     private Vector3     targetPosition;
     public float        speed;
-    public float        maxHeight;
-    public float        minHeight;
+    private float       maxHeight;
+    private float       minHeight;
 
     protected override void Start()
     {

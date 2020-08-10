@@ -55,4 +55,20 @@ public class PhysicalObject : MonoBehaviour
 
     public Boolean GetDestroyed() { return isDestroyed; }
     public void SetDestroyed(Boolean isDestroyed) { this.isDestroyed = isDestroyed; }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Platform"))
+        {
+            transform.parent = collision.transform;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Platform"))
+        {
+            transform.parent = null;
+        }
+    }
 }

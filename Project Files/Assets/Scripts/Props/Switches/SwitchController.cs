@@ -31,16 +31,26 @@ public class SwitchController : MonoBehaviour
 
     virtual protected void ActivateSwitch()
     {
-        // Plug in
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (!isLeftPlugged && !isRightPlugged)
         {
-            // Left hand ready to plug in
-            // Right hand ready to plug out
-            if (isLeftArmAround && leftArm.GetControl() ||
-                isRightArmAround && rightArm.GetControl())
+            // Plug in
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                OnActivation();
-                return;
+                // Left hand ready to plug in
+                // Right hand ready to plug out
+                if (isLeftArmAround && leftArm.GetControl() ||
+                    isRightArmAround && rightArm.GetControl())
+                {
+                    OnActivation();
+                    return;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.R) && player.GetControlling())
+            {
+                OnDeactivation();
+                isLeftArmAround = false;
+                isRightArmAround = false;
+                isPlugOutEnabled = true;
             }
         }
         // Start plugging out
@@ -61,20 +71,13 @@ public class SwitchController : MonoBehaviour
                 {
                     OnDeactivation();
                 }
-            }           
-        }
-        if (Input.GetKeyDown(KeyCode.R) && player.GetControlling())
-        {
-            OnDeactivation();
-            isLeftArmAround    = false;
-            isRightArmAround   = false;
-            isPlugOutEnabled    = true;
+            }
         }
         // Plug out
         if (Input.GetKeyUp(KeyCode.Q))
         {
             counter = 0;
-            if ((isLeftPlugged && leftArm.GetControl()) || 
+            if ((isLeftPlugged && leftArm.GetControl()) ||
                 (isRightPlugged && rightArm.GetControl()))
             {
                 isPlugOutEnabled = true;
@@ -131,14 +134,15 @@ public class SwitchController : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
-    { 
+    {
         if (collision.CompareTag("Hand"))
         {
-            // 11: Left Hand, 12: Right Hand
+            // 11: Left Hand
             if (collision.gameObject.layer == 11)
             {
                 isLeftArmAround = true;
             }
+            // 12: Right Hand
             if (collision.gameObject.layer == 12)
             {
                 isRightArmAround = true;
@@ -150,16 +154,23 @@ public class SwitchController : MonoBehaviour
     {
         if (collision.CompareTag("Hand"))
         {
-            // 11: Left Hand, 12: Right Hand
+            // 11: Left Hand
             if (collision.gameObject.layer == 11)
             {
-                OnDeactivation();
                 isLeftArmAround = false;
+                if (isLeftPlugged)
+                {
+                    OnDeactivation();
+                }
             }
+            // 12: Right Hand
             if (collision.gameObject.layer == 12)
             {
-                OnDeactivation();
                 isRightArmAround = false;
+                if (isRightPlugged)
+                {
+                    OnDeactivation();
+                }
             }
         }
     }

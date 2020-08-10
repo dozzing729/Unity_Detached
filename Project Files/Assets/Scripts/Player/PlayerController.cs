@@ -378,22 +378,6 @@ public class PlayerController : PhysicalObject
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Platform"))
-        {
-            this.transform.parent = collision.transform;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Platform"))
-        {
-            this.transform.parent = null;
-        }
-    }
-
     private void OnDrawGizmos()
     { Gizmos.DrawWireCube(groundCheck.transform.position, new Vector2(2.2f * groundCheckWidth, 0.5f)); }
 
