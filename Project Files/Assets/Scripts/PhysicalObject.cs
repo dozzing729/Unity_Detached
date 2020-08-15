@@ -9,13 +9,11 @@ public class PhysicalObject : MonoBehaviour
     public GameObject       normalSprite;
     public GameObject       destroyedSprite;
     public new Rigidbody2D  rigidbody;
-    public new Transform    transform;
     
     protected void Start()
     {
         isDestroyed = false;
         rigidbody   = GetComponent<Rigidbody2D>();
-        transform   = GetComponent<Transform>();
         normalSprite    .SetActive(true);
         destroyedSprite .SetActive(false);
     }
@@ -56,7 +54,7 @@ public class PhysicalObject : MonoBehaviour
     public Boolean GetDestroyed() { return isDestroyed; }
     public void SetDestroyed(Boolean isDestroyed) { this.isDestroyed = isDestroyed; }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    protected void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Platform"))
         {
@@ -64,7 +62,7 @@ public class PhysicalObject : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    protected void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Platform"))
         {

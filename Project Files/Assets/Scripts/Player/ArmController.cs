@@ -111,6 +111,7 @@ public class ArmController : PhysicalObject
         rigidbody.mass              = 0f;
         isMovable                   = false;
         isRetrieving                = true;
+        OnPlugOut();
     }
 
     private void Retrieve()
@@ -260,6 +261,17 @@ public class ArmController : PhysicalObject
         isMovable                   = true;
     }
 
+    private new void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Ignore collision detection when retrieving
+        if (collision.collider.CompareTag("Platform"))
+        {
+            if (!isRetrieving)
+            {
+                transform.parent = collision.transform;
+            }
+        }
+    }
 
     public void SetTreadmillVelocity(float treadmillVelocity)
     { this.treadmillVelocity = treadmillVelocity; }
