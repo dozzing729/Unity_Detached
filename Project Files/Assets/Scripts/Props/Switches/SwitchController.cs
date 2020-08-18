@@ -25,8 +25,30 @@ public class SwitchController : MonoBehaviour
 
     virtual protected void Update()
     {
+        HandCheck();
+        PlugCheck();
         ActivateSwitch();
         SpriteControl();
+    }
+
+    virtual protected void HandCheck()
+    {
+        isLeftArmAround  = Physics2D.OverlapBox(transform.position, new Vector3(2.3f, 3.2f, 0), 0.0f, LayerMask.GetMask("Left Arm"));
+        isRightArmAround = Physics2D.OverlapBox(transform.position, new Vector3(2.3f, 3.2f, 0), 0.0f, LayerMask.GetMask("Right Arm"));
+    }
+
+    virtual protected void PlugCheck()
+    {
+        if (isLeftPlugged && !isLeftArmAround)
+        {
+            isLeftPlugged = false;
+            OnDeactivation();
+        }
+        if (isRightPlugged && !isRightArmAround)
+        {
+            isRightPlugged = false;
+            OnDeactivation();
+        }
     }
 
     virtual protected void ActivateSwitch()
@@ -48,9 +70,9 @@ public class SwitchController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.R) && player.GetControlling())
             {
                 OnDeactivation();
-                isLeftArmAround = false;
-                isRightArmAround = false;
-                isPlugOutEnabled = true;
+                isLeftArmAround     = false;
+                isRightArmAround    = false;
+                isPlugOutEnabled    = true;
             }
         }
         // Start plugging out
@@ -133,45 +155,50 @@ public class SwitchController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Hand"))
-        {
-            // 11: Left Hand
-            if (collision.gameObject.layer == 11)
-            {
-                isLeftArmAround = true;
-            }
-            // 12: Right Hand
-            if (collision.gameObject.layer == 12)
-            {
-                isRightArmAround = true;
-            }
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Hand"))
+    //    {
+    //        // 11: Left Hand
+    //        if (collision.gameObject.layer == 11)
+    //        {
+    //            isLeftArmAround = true;
+    //        }
+    //        // 12: Right Hand
+    //        if (collision.gameObject.layer == 12)
+    //        {
+    //            isRightArmAround = true;
+    //        }
+    //    }
+    //}
 
-    private void OnTriggerExit2D(Collider2D collision)
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Hand"))
+    //    {
+    //        // 11: Left Hand
+    //        if (collision.gameObject.layer == 11)
+    //        {
+    //            isLeftArmAround = false;
+    //            if (isLeftPlugged)
+    //            {
+    //                OnDeactivation();
+    //            }
+    //        }
+    //        // 12: Right Hand
+    //        if (collision.gameObject.layer == 12)
+    //        {
+    //            isRightArmAround = false;
+    //            if (isRightPlugged)
+    //            {
+    //                OnDeactivation();
+    //            }
+    //        }
+    //    }
+    //}
+
+    private void OnDrawGizmos()
     {
-        if (collision.CompareTag("Hand"))
-        {
-            // 11: Left Hand
-            if (collision.gameObject.layer == 11)
-            {
-                isLeftArmAround = false;
-                if (isLeftPlugged)
-                {
-                    OnDeactivation();
-                }
-            }
-            // 12: Right Hand
-            if (collision.gameObject.layer == 12)
-            {
-                isRightArmAround = false;
-                if (isRightPlugged)
-                {
-                    OnDeactivation();
-                }
-            }
-        }
+        Gizmos.DrawWireCube(transform.position, new Vector3(2.3f, 3.2f, 0));
     }
 }

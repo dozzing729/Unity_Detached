@@ -60,6 +60,10 @@ public class PhysicalObject : MonoBehaviour
         {
             transform.parent = collision.transform;
         }
+        if (collision.collider.CompareTag("Crusher"))
+        {
+            SetDestroyed(true);
+        }
     }
 
     protected void OnCollisionExit2D(Collision2D collision)

@@ -7,9 +7,11 @@ public class ArmController : PhysicalObject
 {
     [Header("Movement Attributes")]
     public GameObject           player;
+    public GameObject           normal;
     private PlayerController    playerController;
     public Camera               mainCamera;
     private Animator            anim;
+    private Vector3             origin;
     public float                retrieveSpeed;
     public float                moveSpeed;
     public float                checkRectX;
@@ -26,7 +28,7 @@ public class ArmController : PhysicalObject
     private SpriteRenderer      sprite;
     public CapsuleCollider2D    capsuleCollider;
     public CircleCollider2D     circleCollider_1, circleCollider_2;
-    private Vector2             playerPosition;
+    private Vector3             playerPosition;
     public float                retreiveRadius;
     private float               gravityScale;
     private float               mass;
@@ -35,12 +37,14 @@ public class ArmController : PhysicalObject
 
     private new void Start()
     {
+        base.Start();
         // Inactive in default
         gameObject.SetActive(false);
 
         // Movement Attributes
         playerController    = player.GetComponent<PlayerController>();
-        anim                = GetComponent<Animator>();
+        anim                = normal.GetComponent<Animator>();
+        origin              = transform.position;
         dir                 = 1;
         lastDir             = 1;
         treadmillVelocity   = 0f;
@@ -50,7 +54,7 @@ public class ArmController : PhysicalObject
         isOnTreadmill       = false;
 
         // Retreive Attributes
-        sprite              = GetComponent<SpriteRenderer>();
+        sprite              = normal.GetComponent<SpriteRenderer>();
         playerPosition      = player.transform.position;
         gravityScale        = rigidbody.gravityScale;
         mass                = rigidbody.mass;
@@ -60,6 +64,7 @@ public class ArmController : PhysicalObject
 
     private new void Update()
     {
+        base.Update();
         GroundCheck();
         if (!isControlling)
         {
@@ -76,7 +81,7 @@ public class ArmController : PhysicalObject
         rigidbody.gravityScale  = gravityScale;
         rigidbody.mass          = mass;
         isRetrieveComplete      = false;
-        Vector2 fireVector      = Vector2.zero;
+        Vector3 fireVector      = Vector3.zero;
         playerPosition          = player.transform.position;
         gameObject              .SetActive(true);
 
@@ -87,12 +92,12 @@ public class ArmController : PhysicalObject
             case 1:
                 playerPosition.x                += 2;
                 gameObject.transform.position   = playerPosition;
-                fireVector                      = new Vector2(5 + power, 15 + power);
+                fireVector                      = new Vector3(5 + power, 15 + power, 0);
                 break;
             case -1:
                 playerPosition.x                -= 2;
                 gameObject.transform.position   = playerPosition;
-                fireVector                      = new Vector2(-5 - power, 15 + power);
+                fireVector                      = new Vector3(-5 - power, 15 + power, 0);
                 break;
         }
 
@@ -107,6 +112,7 @@ public class ArmController : PhysicalObject
         capsuleCollider.isTrigger   = true;
         circleCollider_1.isTrigger  = true;
         circleCollider_2.isTrigger  = true;
+        rigidbody.velocity          = Vector3.zero;
         rigidbody.gravityScale      = 0f;
         rigidbody.mass              = 0f;
         isMovable                   = false;
@@ -121,10 +127,10 @@ public class ArmController : PhysicalObject
 
         if (isRetrieving)
         {
-            Vector2 temp        = new Vector2(transform.position.x, transform.position.y);
-            Vector2 diff        = playerPosition - temp;
-            Vector2 direction   = diff.normalized;
-            Vector2 movement    = direction * retrieveSpeed * Time.deltaTime;
+            Vector3 temp        = new Vector3(transform.position.x, transform.position.y, 0);
+            Vector3 diff        = playerPosition - temp;
+            Vector3 direction   = diff.normalized;
+            Vector3 movement    = direction * retrieveSpeed * Time.deltaTime;
 
             // Move towards the player
             transform.Translate(movement, Space.World);
@@ -132,6 +138,7 @@ public class ArmController : PhysicalObject
             // Retrieve complete
             if (diff.magnitude < retreiveRadius)
             {
+                transform.position          = origin;
                 rigidbody.gravityScale      = gravityScale;
                 rigidbody.mass              = mass;
                 capsuleCollider.isTrigger   = false;
@@ -148,8 +155,8 @@ public class ArmController : PhysicalObject
     private void Move()
     {
         // User input calculated
-        float horizontal = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
-        float vertical = rigidbody.velocity.y;
+        float horizontal    = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
+        float vertical      = rigidbody.velocity.y;
 
         if (isControlling)
         {

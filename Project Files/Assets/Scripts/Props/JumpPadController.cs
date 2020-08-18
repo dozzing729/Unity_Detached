@@ -43,8 +43,8 @@ public class JumpPadController : MonoBehaviour
     private void PlayerCheck()
     {
         isPlayerOnPad       = Physics2D.OverlapBox(playerCheck.transform.position, new Vector2(checkRectX, checkRectY), 0.0f, LayerMask.GetMask("Player"));
-        isLeftHandOnPad     = Physics2D.OverlapBox(playerCheck.transform.position, new Vector2(checkRectX, checkRectY), 0.0f, LayerMask.GetMask("Left Hand"));
-        isRightHandOnPad    = Physics2D.OverlapBox(playerCheck.transform.position, new Vector2(checkRectX, checkRectY), 0.0f, LayerMask.GetMask("Right Hand"));
+        isLeftHandOnPad     = Physics2D.OverlapBox(playerCheck.transform.position, new Vector2(checkRectX, checkRectY), 0.0f, LayerMask.GetMask("Left Arm"));
+        isRightHandOnPad    = Physics2D.OverlapBox(playerCheck.transform.position, new Vector2(checkRectX, checkRectY), 0.0f, LayerMask.GetMask("Right Arm"));
     }
 
     private void ActivateJumpPad()

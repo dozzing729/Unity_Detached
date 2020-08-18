@@ -4,9 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Hand
+  - Arm
   - Physical Object
   - Platform
+  - Crusher
   layers:
   - Default
   - TransparentFX
@@ -19,8 +20,8 @@ TagManager:
   - Ground
   - Wall
   - Player
-  - Left Hand
-  - Right Hand
+  - Left Arm
+  - Right Arm
   - Physical Object
   - 
   - 

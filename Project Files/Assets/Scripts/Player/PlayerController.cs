@@ -8,6 +8,7 @@ public class PlayerController : PhysicalObject
     [Header("Movement Attributes")]
     public Camera       mainCamera;
     private Rigidbody2D rigidBody;
+    public GameObject   normal;
     public float        moveSpeed;
     public float        jumpHeight;
     private float       treadmillVelocity;
@@ -56,7 +57,7 @@ public class PlayerController : PhysicalObject
         isRightRetrieving   = false;
 
         // Animation attributes
-        animator        = GetComponent<Animator>();
+        animator        = normal.GetComponent<Animator>();
         dir             = 0;
         lastDir         = 1;
         state           = State.idle;
@@ -256,7 +257,7 @@ public class PlayerController : PhysicalObject
 
     private void ChangeControl()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && state != State.charge)
         {
             if ((arms == 1 && enabledArms == 2) ||
                 (arms == 0 && enabledArms == 1))

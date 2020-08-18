@@ -22,6 +22,7 @@ public class BoxGenerator : MonoBehaviour
         total       = 0;
         isReady     = false;
         boxes       = new List<GameObject>();
+
         Invoke("GetReady", waitTime);
     }
 
@@ -64,15 +65,9 @@ public class BoxGenerator : MonoBehaviour
         {
             GameObject item                 = boxes[i];
             PhysicalObject physicalObject   = item.GetComponent<PhysicalObject>();
-            if (physicalObject.GetDestroyed())
-            {
-                physicalObject.GetComponent<BoxCollider2D>().enabled = false;
-            }
-            Vector2 position = physicalObject.transform.position;
-            if (FallCheck(position))
-            {
-                RemoveBox(i);
-            }
+            Vector2 position                = physicalObject.transform.position;
+
+            if (FallCheck(position)) RemoveBox(i);
         }
     }
 
