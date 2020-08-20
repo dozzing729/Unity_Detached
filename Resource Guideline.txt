@@ -1,0 +1,93 @@
+PhysicalObject
+	Normal, Destroyed, 2개의 객체를 참조한다
+	Normal은 일반적인 상태를 나타내는 객체
+	Destroyed는 파괴된 상태를 나타내는 객체
+	SetDestroyed(boolean)를 호출하여 해당 객체를 파괴하거나 살릴 수 있다.
+
+Player prefab
+	PhysicalObject를 상속
+	Main Camera, First Arm, Second Arm을 수동 세팅
+	Normal, Destroyed, GroundCheck, 3개의 자식으로 이뤄져있다.
+	Normal은 일반적인 상태의 player가 가지는 sprite, animation, collider를 가진다
+	Destroyed는 파괴된 상태의 player가 가지는 컴포넌트들을 추가할 예정
+	GroundCheck는 말그대로 땅 체크하는 기준
+
+Left/Right prefab
+	PhysicalObject를 상속
+	Main Camera, Player를 수동 세팅
+	나머진 Player prefab과 같다
+
+SwitchController
+	모든 스위치들이 상속할 부모 스크립트
+	세가지 상태를 나타내는 자식 오브젝트인 unpluggedSprite, pluggedSpriteGreen, pluggedSpriteRed를 가지고 있으며
+	작동을 할 목표 오브젝트인 target을 수동 세팅
+	leftArm, rightArm, player을 수동 세팅
+	기본적으로 플러그 인/아웃 두가지 상태만을 제공하므로
+	플러그인 - 비동작/플러그인 - 동작/플러그 아웃의 세가지 상태가 필요한 경우, 오버라이드하여 재정의 필요
+	참고로 C#에서 부모 클래스를 참조하는 단어는 super가 아니라 base더라.
+	즉, 부모의 Update를 그대로 사용하고 싶으면 자식의 Update 함수를
+		protected override void Update() {
+			base.Update();
+		}
+	이렇게 정의해주면 되고, 새로 정의하려면 base.Update()를 쓰지 않고 원하는대로 재정의해주면 된다.
+
+DoorSwitch prefab
+	SwitchController를 상속
+	target으로 Door prefab의 door_body를 매칭시켜 줘야함
+	플러그인 -> target이 사라짐
+	플러그아웃 -> target이 나타남
+
+LiftSwitch prefab
+	SwitchController를 상속
+	target으로 Lift 오브젝트를 직접 만들어야함. (prefab이 없음)
+	Lift
+		Sprite, Max Height, Min Height, 3개의 자식으로 만들어진 객체
+		Sprite엔 말그대로 스프라이트를 가져와서 타일맵처럼 일일히 갖다붙힌다
+		세팅한 Sprite의 형태에 맞게 Lift에 BoxCollider2D를 만들어준다
+		Min Height는 리프트 최저 높이, Max Height는 리프트 최고 높이를 나타낸다.
+	Lift 객체가 생성되면 target에 Lift, MinHeight에 Min Height, MaxHeight에 Max Height를 세팅
+	
+Crusher prefab
+	Player, Left Arm, Right Arm 세팅 필요
+	Base, Column, Column Collier, 3개의 자식으로 만들어진 객체
+	Base는 의미 없음. 그냥 Column이 왔다갔다 할 원점
+	Column은 BoxCollider2D와 CrusherController를 가진다
+	Column의 BoxCollider2D는 PhysicalObject와의 충돌을 감지하기 위한 목적
+	Column Collider의 BoxCollider2D는 일반적인 충돌을 생성하기 위한 목적
+	Column의 BoxCollider2D가 PhysicalObject와 충돌하면 그 피격체는 SetDestroyed()를 호출한다 (파괴 상태)
+
+TreadmillController
+	Treadmill 객체를 Tilemap2D로 먼저 생성한다.
+	생성된 Treadmill 객체에 TreadmillController를 추가한다.
+	Dir을 -1로 하면 왼쪽, 1로 하면 오른쪽으로 이동
+	Speed 조절 가능
+	Treadmill의 TilemapCollider2D에 충돌이 일어나면 해당 피격체의 태그에 따라 다른 동작을 실행
+		PhysicalObject인 경우(박스 등 물체) -> velocity를 수정하여 직접 움직임
+		Player/Arm인 경우 -> player/arm의 SetOnTreadmill(true)과 SetTreadmillVelocity()를 실행하여 간접적으로 움직임
+		(플레이어의 조작에 따라 움직이는 물체는 직접 velocity를 조정하면 버그가 일어났음. 그래서 TreadmillController가 Player/ArmController에 메시지를 줘서 속도에 변화를 주도록 유도)
+	Treadmill의 TilemapCollider2D에서 피격체가 떨어지는 순간
+		PhysicalObject인 경우 -> ApplyInertia()를 호출하여 관성이 작동하도록 함
+		Player/Arm인 경우 -> SetOnTreadmill(false)을 호출
+
+BoxGenerator
+	일정 시간 간격으로 박스를 생성하는 스크립트
+	빈 오브젝트를 만들어 BoxGenerator를 추가하여 사용하면 된다.
+	자식 객체로 Fall Check를 만들어 BoxGenerator의 FallCheck에 세팅 -> 이 객체의 높이에 박스가 이르렀을 때 박스는 리젠된다
+	어떤 박스를 생성할 것인지 Box prefab 중 아무거나 선택해서 Box에 세팅
+	최초 대기 시간, 리젠 시간 간격, 최대 박스 갯수 등을 조정해줄 수 있다
+
+타일맵 가이드라인
+	2D 게임은 X/Y 축으로 게임의 메커니즘이 동작하지만 Z축을 통해 무엇이 뒤에 있고 앞에 있는지 구분할 수 있다.
+	카메라가 기본적으로 Z축의 +방향으로 향하고 있기 때문에 물체의 Z축 값이 클 수록 뒤에 있고 작을 수록 앞에 있다.
+	단, 카메라의 Z축 방향이 현재 -100으로 세팅되어 있기 때문에 -100보다 작아지만 아예 보이지 않게된다.
+	플레이어의 Z위치는 0이다.
+	모든 타일맵의 부모가 되는 Grid의 Z위치는 0
+	Grid에서 플레이어가 서있을 수 있는 Collider가 존재하는 가장 기본적인 타일맵을 Ground_back으로 설정했다.
+	Ground_back의 Z위치는 30
+	그보다 살짝 더 가까이 있는 Ground_front의 Z위치는 20
+	뒷 배경을 나타내는 Background는 50
+	이 외에 Tilemap은 아니지만 여러 배경 오브젝트들을 담은 Backgrounds의 Z위치는 50
+	이 객체들의 Z위치는 필요에 따라 추가, 변경해도 좋으나 서로간의 대소 관계는 유지해야 한다.
+	
+	보경님이 주시는 타일맵 에셋들의 네이티브 사이즈는 3000x3000이라고 한다.
+	지나치게 큰 사이즈긴 하지만 프로젝트로 끌어온 후 Pixels Per Unit을 1500으로 맞춰주면(기본 100) 현재 우리가 쓰는 사이즈에 맞게 조정된다
