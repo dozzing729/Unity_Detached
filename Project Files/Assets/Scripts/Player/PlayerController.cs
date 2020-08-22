@@ -40,6 +40,13 @@ public class PlayerController : PhysicalObject
     private State       state;
     private bool        isStateFixed;
 
+    [Header("Destruction Attributes")]
+    public GameObject   head;
+    public GameObject   body;
+    public GameObject   left_arm;
+    public GameObject   right_arm;
+    private bool isDead;
+
     private new void Start()
     {
         base.Start();
@@ -62,21 +69,33 @@ public class PlayerController : PhysicalObject
         lastDir         = 1;
         state           = State.idle;
         isStateFixed    = false;
+
+        // Destruction attributes
+        isDead = false;
     }
 
     private new void Update()
     {
         base.Update();
-        GroundCheck();
-        ChangeControl();
-        AnimationControl();
-
-        if (isControlling)
+        if (GetDestroyed())
         {
-            Jump();
-            Move();
-            Shoot();
-            Retrieve();
+            if (!isDead)
+            {
+                OnDestruction();
+            }
+        }
+        else
+        {
+            GroundCheck();
+            ChangeControl();
+            AnimationControl();
+            if (isControlling)
+            {
+                Jump();
+                Move();
+                Shoot();
+                Retrieve();
+            }
         }
     }
 
@@ -377,6 +396,26 @@ public class PlayerController : PhysicalObject
                 }
                 break;
         }
+    }
+
+    private void OnDestruction()
+    {
+        head        .transform.parent = null;
+        body        .transform.parent = null;
+        left_arm    .transform.parent = null;
+        right_arm   .transform.parent = null;
+
+        Rigidbody2D headRB      = head.GetComponent<Rigidbody2D>();
+        Rigidbody2D bodyRB      = body.GetComponent<Rigidbody2D>();
+        Rigidbody2D leftArmRB   = left_arm.GetComponent<Rigidbody2D>();
+        Rigidbody2D rightArmRB  = right_arm.GetComponent<Rigidbody2D>();
+
+        headRB      .AddForce(new Vector2(0.0f, 2.0f), ForceMode2D.Impulse);
+        bodyRB      .AddForce(new Vector2(0.0f, 1.0f), ForceMode2D.Impulse);
+        leftArmRB   .AddForce(new Vector2(1.0f, 1.0f), ForceMode2D.Impulse);
+        rightArmRB  .AddForce(new Vector2(-1.0f, 1.0f), ForceMode2D.Impulse);
+
+        isDead = true;
     }
 
     private void OnDrawGizmos()
