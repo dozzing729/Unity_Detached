@@ -9,10 +9,25 @@ public class HomeController : MonoBehaviour
     public GameObject   menu_2;
     public GameObject   menu_3;
     public GameObject   menu_4;
+    public GameObject   noSaveDataDialog;
+    public GameObject   saveDataExistsDialog;
+    public GameObject   settingsDialog;
+    public GameObject   quitDialog;
     private int         selectedMenu = 1;
+    private enum        focus { main, noSaveData, saveDataExists, settings, quit };
+    private             focus focusStatus = focus.main;
  
     void Start()
     {
+        Cursor.visible = false;
+
+        // Dialogs
+        noSaveDataDialog    .SetActive(false);
+        saveDataExistsDialog.SetActive(false);
+        settingsDialog      .SetActive(false);
+        quitDialog          .SetActive(false);
+
+        // Indicator
         Vector3 origin = menu_1.transform.position;
         origin.x += 2.5f;
         indicator.transform.position = origin;
@@ -20,8 +35,22 @@ public class HomeController : MonoBehaviour
 
     void Update()
     {
-        DirectionalKeys();
-        EnterKey();
+        switch (focusStatus)
+        {
+            case focus.main:
+                DirectionalKeys();
+                EnterKey();
+                break;
+            case focus.noSaveData:
+                break;
+            case focus.saveDataExists:
+                break;
+            case focus.settings:
+                break;
+            case focus.quit:
+                break;
+        }
+        
     }
 
     private void DirectionalKeys()
@@ -103,18 +132,58 @@ public class HomeController : MonoBehaviour
             switch (selectedMenu)
             {
                 case 1:
-                    Debug.Log("NEW GAME");
+                    NewGame();
                     break;
                 case 2:
-                    Debug.Log("LOAD GAME");
+                    LoadGame();
                     break;
                 case 3:
-                    Debug.Log("SETTINGS");
+                    Settings();
                     break;
                 case 4:
-                    Debug.Log("QUIT");
+                    Quit();
                     break;
             }
         }
+    }
+
+    private void NewGame()
+    {
+        SaveData data = SaveSystem.LoadGame();
+        if (data == null)
+        {
+            
+        }
+        else
+        {
+            saveDataExistsDialog.SetActive(true);
+            focusStatus = focus.saveDataExists;
+        }
+    }
+
+    private void LoadGame()
+    {
+        SaveData data = SaveSystem.LoadGame();
+        if (data == null)
+        {
+            noSaveDataDialog.SetActive(true);
+            focusStatus = focus.noSaveData;
+        }
+        else
+        {
+
+        }
+    }
+
+    private void Settings()
+    {
+        settingsDialog.SetActive(true);
+        focusStatus = focus.settings;
+    }
+    
+    private void Quit()
+    {
+        quitDialog.SetActive(true);
+        focusStatus = focus.quit;
     }
 }

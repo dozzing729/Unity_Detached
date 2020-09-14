@@ -433,6 +433,9 @@ public class PlayerController : PhysicalObject
     public void EnableArms(short enabledArms)
     { this.enabledArms = arms = enabledArms; }
 
+    public int GetEnabledArms()
+    { return enabledArms; }
+
     public short GetDir()
     { return lastDir; }
 
